@@ -356,7 +356,7 @@ export default function App() {
           shouldClearLoading = false;
           triggerAutoFallback();
           if (isFullScript) {
-            const turns = parseFullScript(activeScript?.fullScript || "");
+            const turns = parseFullScript(fullScriptText);
             playLocalDialogue(turns);
           } else {
             playLocalDialogue();
