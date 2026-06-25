@@ -530,7 +530,7 @@ export default function App() {
         const activeScript = SAMPLE_SCRIPTS.find(s => s.id === activePreset);
         const isFullScript = !!activeScript?.fullScript;
         if (isFullScript) {
-          const turns = parseFullScript(activeScript?.fullScript || "");
+          const turns = parseFullScript(fullScriptText);
           playLocalDialogue(turns);
         } else {
           playLocalDialogue();
