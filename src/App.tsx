@@ -772,46 +772,82 @@ export default function App() {
               </div>
             </div>
 
-            {/* Scrollable Script Log */}
-            <div className="bg-slate-950/60 rounded-xl border border-slate-800/80 p-6 max-h-[480px] overflow-y-auto flex flex-col gap-4 font-sans text-sm">
-              {SAMPLE_SCRIPTS.find(s => s.id === "full_episode")?.fullScript?.split("\n\n").map((paragraph, index) => {
-                const isHost = paragraph.startsWith("المذيع:");
-                const isCollector = paragraph.startsWith("المحصّل:") || paragraph.startsWith("المحصل:");
-                const textContent = paragraph.replace(/^(المذيع:|المحصّل:|المحصل:)\s*/, "").trim();
-                
-                if (!textContent) return null;
-
-                return (
-                  <div 
-                    key={index} 
-                    className={`flex flex-col gap-1.5 p-3.5 rounded-xl border transition-all ${
-                      isHost 
-                        ? "bg-indigo-950/10 border-indigo-950/30 ml-8 text-right" 
-                        : isCollector 
-                        ? "bg-amber-950/5 border-amber-950/10 mr-8 text-right"
-                        : "bg-slate-900/10 border-slate-800/40 mx-4"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 mb-1">
-                      {isHost ? (
-                        <>
-                          <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-indigo-600 text-white">المذيع</span>
-                          <span className="text-[10px] text-indigo-400 font-bold">بصوت Charon (رجالي سعودي عامي)</span>
-                        </>
-                      ) : isCollector ? (
-                        <>
-                          <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-amber-600 text-slate-950">المحصل</span>
-                          <span className="text-[10px] text-amber-400 font-bold">بصوت Fenrir (رجالي سعودي عامي)</span>
-                        </>
-                      ) : (
-                        <span className="text-[10px] text-slate-400 font-bold">راوي</span>
-                      )}
-                    </div>
-                    <p className="text-slate-200 leading-relaxed text-xs md:text-sm">{textContent}</p>
-                  </div>
-                );
-              })}
+            {/* Edit/Preview Toggle */}
+            <div className="flex items-center justify-between gap-2 mb-3">
+              <div className="flex items-center gap-2 text-xs text-slate-400">
+                <Info className="w-4 h-4 text-indigo-400" />
+                <span>يمكنك تعديل النص أو إضافة فقرات جديدة. ابدأ كل فقرة بـ <strong className="text-indigo-300">المذيع:</strong> أو <strong className="text-amber-300">المحصّل:</strong> وافصل بين الفقرات بسطر فارغ.</span>
+              </div>
+              <div className="flex gap-2 flex-shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setIsEditingScript((v) => !v)}
+                  className="px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition-all cursor-pointer"
+                >
+                  {isEditingScript ? "معاينة" : "تعديل النص"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFullScriptText(SAMPLE_SCRIPTS.find(s => s.id === "full_episode")?.fullScript || "")}
+                  className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 transition-all cursor-pointer"
+                  title="إعادة تعيين النص الأصلي"
+                >
+                  استعادة
+                </button>
+              </div>
             </div>
+
+            {/* Editable Script or Scrollable Script Log */}
+            {isEditingScript ? (
+              <textarea
+                value={fullScriptText}
+                onChange={(e) => setFullScriptText(e.target.value)}
+                dir="rtl"
+                className="w-full bg-slate-950/60 rounded-xl border border-indigo-800/60 focus:border-indigo-500 outline-none p-6 h-[480px] text-slate-100 leading-relaxed text-sm font-sans resize-none"
+                placeholder="اكتب الحوار هنا..."
+              />
+            ) : (
+              <div className="bg-slate-950/60 rounded-xl border border-slate-800/80 p-6 max-h-[480px] overflow-y-auto flex flex-col gap-4 font-sans text-sm">
+                {fullScriptText.split("\n\n").map((paragraph, index) => {
+                  const isHost = paragraph.startsWith("المذيع:");
+                  const isCollector = paragraph.startsWith("المحصّل:") || paragraph.startsWith("المحصل:");
+                  const textContent = paragraph.replace(/^(المذيع:|المحصّل:|المحصل:)\s*/, "").trim();
+                  
+                  if (!textContent) return null;
+
+                  return (
+                    <div 
+                      key={index} 
+                      className={`flex flex-col gap-1.5 p-3.5 rounded-xl border transition-all ${
+                        isHost 
+                          ? "bg-indigo-950/10 border-indigo-950/30 ml-8 text-right" 
+                          : isCollector 
+                          ? "bg-amber-950/5 border-amber-950/10 mr-8 text-right"
+                          : "bg-slate-900/10 border-slate-800/40 mx-4"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        {isHost ? (
+                          <>
+                            <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-indigo-600 text-white">المذيع</span>
+                            <span className="text-[10px] text-indigo-400 font-bold">بصوت Charon (رجالي سعودي عامي)</span>
+                          </>
+                        ) : isCollector ? (
+                          <>
+                            <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-amber-600 text-slate-950">المحصل</span>
+                            <span className="text-[10px] text-amber-400 font-bold">بصوت Fenrir (رجالي سعودي عامي)</span>
+                          </>
+                        ) : (
+                          <span className="text-[10px] text-slate-400 font-bold">راوي</span>
+                        )}
+                      </div>
+                      <p className="text-slate-200 leading-relaxed text-xs md:text-sm">{textContent}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
 
             {/* Large generate button for the full episode */}
             <div className="mt-6">
