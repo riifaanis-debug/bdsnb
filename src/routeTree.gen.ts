@@ -10,33 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiGenerateTtsRouteImport } from './routes/api/generate-tts'
+import { Route as ApiGenerateDialogueRouteImport } from './routes/api/generate-dialogue'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiGenerateTtsRoute = ApiGenerateTtsRouteImport.update({
+  id: '/api/generate-tts',
+  path: '/api/generate-tts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiGenerateDialogueRoute = ApiGenerateDialogueRouteImport.update({
+  id: '/api/generate-dialogue',
+  path: '/api/generate-dialogue',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/generate-dialogue': typeof ApiGenerateDialogueRoute
+  '/api/generate-tts': typeof ApiGenerateTtsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/generate-dialogue': typeof ApiGenerateDialogueRoute
+  '/api/generate-tts': typeof ApiGenerateTtsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/generate-dialogue': typeof ApiGenerateDialogueRoute
+  '/api/generate-tts': typeof ApiGenerateTtsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/api/generate-dialogue' | '/api/generate-tts'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/api/generate-dialogue' | '/api/generate-tts'
+  id: '__root__' | '/' | '/api/generate-dialogue' | '/api/generate-tts'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiGenerateDialogueRoute: typeof ApiGenerateDialogueRoute
+  ApiGenerateTtsRoute: typeof ApiGenerateTtsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/generate-tts': {
+      id: '/api/generate-tts'
+      path: '/api/generate-tts'
+      fullPath: '/api/generate-tts'
+      preLoaderRoute: typeof ApiGenerateTtsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/generate-dialogue': {
+      id: '/api/generate-dialogue'
+      path: '/api/generate-dialogue'
+      fullPath: '/api/generate-dialogue'
+      preLoaderRoute: typeof ApiGenerateDialogueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiGenerateDialogueRoute: ApiGenerateDialogueRoute,
+  ApiGenerateTtsRoute: ApiGenerateTtsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
