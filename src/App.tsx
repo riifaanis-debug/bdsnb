@@ -19,6 +19,10 @@ export default function App() {
   const [loadingMessage, setLoadingMessage] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [activePreset, setActivePreset] = useState<string>("full_episode");
+  const [fullScriptText, setFullScriptText] = useState<string>(
+    SAMPLE_SCRIPTS.find((s) => s.id === "full_episode")?.fullScript || ""
+  );
+  const [isEditingScript, setIsEditingScript] = useState(false);
 
   // Voice Engine State (Smart switch between Cloud Gemini & Browser Local)
   const [voiceEngine, setVoiceEngine] = useState<"cloud" | "browser">("cloud");
