@@ -298,7 +298,7 @@ export default function App() {
     const isFullScript = !!activeScript?.fullScript;
 
     if (isFullScript) {
-      if (!activeScript?.fullScript?.trim()) {
+      if (!fullScriptText.trim()) {
         setError("نص الحوار الكامل غير متوفر.");
         return;
       }
@@ -312,7 +312,7 @@ export default function App() {
     // If local browser voice is selected
     if (voiceEngine === "browser") {
       if (isFullScript) {
-        const turns = parseFullScript(activeScript?.fullScript || "");
+        const turns = parseFullScript(fullScriptText);
         playLocalDialogue(turns);
         return;
       }
@@ -327,7 +327,7 @@ export default function App() {
       
       const payload = isFullScript 
         ? {
-            fullScript: activeScript.fullScript,
+            fullScript: fullScriptText,
             hostVoice: "Charon",
             collectorVoice: "Fenrir"
           }
@@ -337,6 +337,7 @@ export default function App() {
             collectorText,
             collectorVoice,
           };
+
 
       const response = await fetch("/api/generate-dialogue", {
         method: "POST",
