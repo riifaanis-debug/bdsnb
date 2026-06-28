@@ -45,15 +45,6 @@ export default function App() {
   const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const currentPlaySessionRef = useRef<number | null>(null);
 
-  // Auto lock config for the full episode
-  useEffect(() => {
-    if (activePreset === "full_episode") {
-      setVoiceEngine("cloud");
-      setHostVoice("Charon");
-      setCollectorVoice("Fenrir");
-    }
-  }, [activePreset]);
-
   // Cancel any speech synthesis on unmount
   useEffect(() => {
     return () => {
@@ -66,18 +57,13 @@ export default function App() {
     };
   }, []);
 
-  // Apply script preset
+  // Apply script preset (المستخدم حر باختيار صوت المذيع والمحصّل في كل الأوضاع)
   const handleApplyPreset = (script: PodcastScript) => {
-    if (script.id === "full_episode") {
-      setActivePreset(script.id);
-      setVoiceEngine("cloud");
-      setHostVoice("Charon");
-      setCollectorVoice("Fenrir");
-    } else {
+    if (script.id !== "full_episode") {
       setHostText(script.hostText);
       setCollectorText(script.collectorText);
-      setActivePreset(script.id);
     }
+    setActivePreset(script.id);
     setError(null);
   };
 
@@ -416,8 +402,8 @@ export default function App() {
       const payload = isFullScript 
         ? {
             fullScript: fullScriptText,
-            hostVoice: "Charon",
-            collectorVoice: "Fenrir"
+            hostVoice,
+            collectorVoice,
           }
         : {
             hostText,
@@ -472,8 +458,8 @@ export default function App() {
         hostText: isFullScript ? undefined : hostText,
         collectorText: isFullScript ? undefined : collectorText,
         fullScript: isFullScript ? fullScriptText : undefined,
-        hostVoice: isFullScript ? "Charon" : hostVoice,
-        collectorVoice: isFullScript ? "Fenrir" : collectorVoice,
+        hostVoice,
+        collectorVoice,
       });
 
       // Auto-play
@@ -874,32 +860,53 @@ export default function App() {
           <div className="w-full bg-slate-900/40 border border-slate-800 rounded-2xl p-3 sm:p-6 flex flex-col shadow-lg relative min-h-[400px] sm:min-h-[500px]" id="full-episode-view">
 
             {/* Full Episode Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-slate-800/80">
+            <div className="flex flex-col gap-3 sm:gap-4 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-slate-800/80">
               <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
                 <div className="w-9 h-9 sm:w-12 sm:h-12 shrink-0 rounded-full bg-indigo-500/10 flex items-center justify-center border border-indigo-500/30">
                   <Mic className="w-4 h-4 sm:w-6 sm:h-6 text-indigo-400" />
                 </div>
-                <div className="min-w-0">
-                  <h2 className="font-bold text-slate-100 text-sm sm:text-lg truncate">النص الحواري الكامل للحلقة المعتمدة</h2>
-                  <p className="text-[10px] sm:text-xs text-indigo-400 font-bold uppercase tracking-wider truncate">
-                    المذيع: Charon • المحصل: Fenrir
+                <div className="min-w-0 flex-1">
+                  <h2 className="font-bold text-slate-100 text-sm sm:text-lg truncate">النص الحواري الكامل للحلقة</h2>
+                  <p className="text-[10px] sm:text-xs text-indigo-400 font-bold tracking-wider truncate">
+                    حوار بين شخصيتين فقط: المذيع والمحصّل
                   </p>
                 </div>
               </div>
 
-              {/* Informational locked voices badge */}
-              <div className="bg-indigo-500/10 border border-indigo-500/20 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl text-[10px] sm:text-xs text-indigo-300 flex items-center gap-1.5 sm:gap-2 self-start sm:self-auto">
-                <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-400 shrink-0" />
-                <span className="font-bold">توليد متصل بملف واحد (Gemini)</span>
-              </div>
-            </div>
-
-            {/* Elegant notice about the constraints */}
-            <div className="bg-indigo-950/40 border border-indigo-900/40 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 text-[11px] sm:text-xs text-slate-300 leading-relaxed flex items-start gap-2 sm:gap-3">
-              <Info className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-400 flex-shrink-0 mt-0.5" />
-              <div>
-                <span className="font-bold block text-slate-100 mb-1">⚠️ شروط الإنتاج الصوتي الإلزامية:</span>
-                تلتزم المنصة بتوليد كامل نص الحوار المعتمد حرفياً ١٠٠٪ دفعة واحدة بملف صوتي واحد دون تعديل لضمان الأداء السلس باللهجة السعودية العامية البسيطة. تم قفل محرك الصوت على خيار السحابي لخدمة <strong className="text-white">Gemini AI</strong> التزاماً بالشروط.
+              {/* Voice selectors for both characters */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                <div className="bg-slate-950/50 border border-indigo-900/40 rounded-xl p-2.5 sm:p-3">
+                  <label className="text-[10px] sm:text-[11px] text-indigo-300 font-black block mb-1.5 flex items-center gap-1.5">
+                    <Mic className="w-3 h-3" /> صوت المذيع
+                  </label>
+                  <select
+                    id="full-host-voice"
+                    value={hostVoice}
+                    onChange={(e) => setHostVoice(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1.5 text-[11px] sm:text-xs text-slate-100 focus:outline-none focus:border-indigo-500 cursor-pointer"
+                  >
+                    {VOICE_OPTIONS.map((v) => (
+                      <option key={v.value} value={v.value}>{v.label} ({v.gender === "male" ? "رجالي" : "نسائي"})</option>
+                    ))}
+                  </select>
+                  <p className="text-[10px] text-slate-500 mt-1 line-clamp-2">{VOICE_OPTIONS.find(v => v.value === hostVoice)?.description}</p>
+                </div>
+                <div className="bg-slate-950/50 border border-amber-900/40 rounded-xl p-2.5 sm:p-3">
+                  <label className="text-[10px] sm:text-[11px] text-amber-300 font-black block mb-1.5 flex items-center gap-1.5">
+                    <User className="w-3 h-3" /> صوت المحصّل
+                  </label>
+                  <select
+                    id="full-collector-voice"
+                    value={collectorVoice}
+                    onChange={(e) => setCollectorVoice(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2 py-1.5 text-[11px] sm:text-xs text-slate-100 focus:outline-none focus:border-amber-500 cursor-pointer"
+                  >
+                    {VOICE_OPTIONS.map((v) => (
+                      <option key={v.value} value={v.value}>{v.label} ({v.gender === "male" ? "رجالي" : "نسائي"})</option>
+                    ))}
+                  </select>
+                  <p className="text-[10px] text-slate-500 mt-1 line-clamp-2">{VOICE_OPTIONS.find(v => v.value === collectorVoice)?.description}</p>
+                </div>
               </div>
             </div>
 
@@ -907,7 +914,7 @@ export default function App() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
               <div className="flex items-start gap-2 text-[11px] sm:text-xs text-slate-400 min-w-0">
                 <Info className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-400 shrink-0 mt-0.5" />
-                <span>يمكنك تعديل النص أو إضافة فقرات جديدة. ابدأ كل فقرة بـ <strong className="text-indigo-300">المذيع:</strong> أو <strong className="text-amber-300">المحصّل:</strong> وافصل بين الفقرات بسطر فارغ.</span>
+                <span>الحوار إلزامياً بين شخصيتين فقط. ابدأ كل فقرة بـ <strong className="text-indigo-300">المذيع:</strong> أو <strong className="text-amber-300">المحصّل:</strong> وافصل بين الفقرات بسطر فارغ.</span>
               </div>
               <div className="flex gap-2 flex-shrink-0">
                 <button
@@ -945,6 +952,8 @@ export default function App() {
                   const textContent = paragraph.replace(/^(المذيع:|المحصّل:|المحصل:)\s*/, "").trim();
 
                   if (!textContent) return null;
+                  const hostLabel = VOICE_OPTIONS.find(v => v.value === hostVoice)?.label || hostVoice;
+                  const collectorLabel = VOICE_OPTIONS.find(v => v.value === collectorVoice)?.label || collectorVoice;
 
                   return (
                     <div
@@ -961,12 +970,12 @@ export default function App() {
                         {isHost ? (
                           <>
                             <span className="px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-black bg-indigo-600 text-white">المذيع</span>
-                            <span className="text-[9px] sm:text-[10px] text-indigo-400 font-bold">بصوت Charon</span>
+                            <span className="text-[9px] sm:text-[10px] text-indigo-400 font-bold truncate">{hostLabel}</span>
                           </>
                         ) : isCollector ? (
                           <>
-                            <span className="px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-black bg-amber-600 text-slate-950">المحصل</span>
-                            <span className="text-[9px] sm:text-[10px] text-amber-400 font-bold">بصوت Fenrir</span>
+                            <span className="px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-black bg-amber-600 text-slate-950">المحصّل</span>
+                            <span className="text-[9px] sm:text-[10px] text-amber-400 font-bold truncate">{collectorLabel}</span>
                           </>
                         ) : (
                           <span className="text-[9px] sm:text-[10px] text-slate-400 font-bold">راوي</span>
