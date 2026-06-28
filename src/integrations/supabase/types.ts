@@ -14,7 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      generated_files: {
+        Row: {
+          audio_path: string | null
+          collector_text: string | null
+          collector_voice: string | null
+          created_at: string
+          duration_seconds: number | null
+          engine: string
+          full_script: string | null
+          host_text: string | null
+          host_voice: string | null
+          id: string
+          kind: string
+          name: string
+          preset_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          audio_path?: string | null
+          collector_text?: string | null
+          collector_voice?: string | null
+          created_at?: string
+          duration_seconds?: number | null
+          engine?: string
+          full_script?: string | null
+          host_text?: string | null
+          host_voice?: string | null
+          id?: string
+          kind?: string
+          name: string
+          preset_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          audio_path?: string | null
+          collector_text?: string | null
+          collector_voice?: string | null
+          created_at?: string
+          duration_seconds?: number | null
+          engine?: string
+          full_script?: string | null
+          host_text?: string | null
+          host_voice?: string | null
+          id?: string
+          kind?: string
+          name?: string
+          preset_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
