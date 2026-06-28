@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, MouseEvent } from "react";
-import { Mic, User, Music, Play, Pause, RotateCcw, Download, Sparkles, AlertCircle, Volume2, HelpCircle, Activity, Settings, Info } from "lucide-react";
+import { Mic, User, Music, Play, Pause, RotateCcw, Download, Sparkles, AlertCircle, Volume2, HelpCircle, Activity, Settings, Info, Database } from "lucide-react";
 import { VOICE_OPTIONS, SAMPLE_SCRIPTS, type VoiceOption, type PodcastScript } from "./data";
+import { supabase } from "@/integrations/supabase/client";
+import GeneratedFilesPanel, { type GeneratedFileRow } from "@/components/GeneratedFilesPanel";
 
 export default function App() {
   // Input states
@@ -27,6 +29,10 @@ export default function App() {
   // Voice Engine State (Smart switch between Cloud Gemini & Browser Local)
   const [voiceEngine, setVoiceEngine] = useState<"cloud" | "browser">("cloud");
   const [quotaExceededNotice, setQuotaExceededNotice] = useState(false);
+
+  // Library panel
+  const [libraryOpen, setLibraryOpen] = useState(false);
+  const [libraryRefresh, setLibraryRefresh] = useState(0);
 
   // HTML5 Audio tracking
   const [currentTime, setCurrentTime] = useState(0);
@@ -188,9 +194,22 @@ export default function App() {
       stopLocalSpeaking();
       
       setAudioUrl(url);
-      setAudioName(`${role === "host" ? "مذيع" : "محصل"}_بودكاست_${Date.now()}.mp3`);
+      const fname = `${role === "host" ? "مذيع" : "محصل"}_بودكاست_${Date.now()}.mp3`;
+      setAudioName(fname);
       setIsPlaying(false);
-      
+
+      // Auto-save to library
+      autoSaveGeneratedFile({
+        name: fname,
+        kind: role === "host" ? "single-host" : "single-collector",
+        engine: "cloud",
+        audioBlob: blob,
+        hostText: role === "host" ? text : undefined,
+        collectorText: role === "collector" ? text : undefined,
+        hostVoice: role === "host" ? voice : undefined,
+        collectorVoice: role === "collector" ? voice : undefined,
+      });
+
       // Auto-play the newly generated audio
       setTimeout(() => {
         if (audioRef.current) {
@@ -254,6 +273,75 @@ export default function App() {
     setVoiceEngine("browser");
     setQuotaExceededNotice(true);
     setError("⚠️ تم تفعيل نظام محاكاة الصوت المدمج في جهازك تلقائياً لتجاوز حد حصة الـ API لخدمة Gemini. يمكنك الاستماع للحوار كاملاً ومتابعة التجربة مجاناً وبلا حدود!");
+  };
+
+  // Auto-save generated file to Lovable Cloud
+  const autoSaveGeneratedFile = async (params: {
+    name: string;
+    kind: "single-host" | "single-collector" | "dialogue" | "full-episode";
+    engine: "cloud" | "browser";
+    audioBlob?: Blob | null;
+    hostText?: string;
+    collectorText?: string;
+    fullScript?: string;
+    hostVoice?: string;
+    collectorVoice?: string;
+    presetId?: string;
+  }) => {
+    try {
+      let audio_path: string | null = null;
+      if (params.audioBlob) {
+        const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.mp3`;
+        const { error: upErr } = await supabase.storage
+          .from("generated-audio")
+          .upload(path, params.audioBlob, { contentType: "audio/mpeg", upsert: false });
+        if (!upErr) audio_path = path;
+        else console.warn("Audio upload failed:", upErr.message);
+      }
+      const { error: insErr } = await supabase.from("generated_files").insert({
+        name: params.name,
+        kind: params.kind,
+        engine: params.engine,
+        preset_id: params.presetId || activePreset,
+        host_text: params.hostText ?? null,
+        collector_text: params.collectorText ?? null,
+        full_script: params.fullScript ?? null,
+        host_voice: params.hostVoice ?? null,
+        collector_voice: params.collectorVoice ?? null,
+        audio_path,
+      });
+      if (insErr) console.warn("DB insert failed:", insErr.message);
+      else setLibraryRefresh((t) => t + 1);
+    } catch (e) {
+      console.warn("autoSaveGeneratedFile failed", e);
+    }
+  };
+
+  // Handler when a file is loaded from the library
+  const handleLoadFromLibrary = (f: GeneratedFileRow, signedUrl: string | null) => {
+    if (f.preset_id) setActivePreset(f.preset_id);
+    if (f.host_voice) setHostVoice(f.host_voice);
+    if (f.collector_voice) setCollectorVoice(f.collector_voice);
+    if (f.host_text != null) setHostText(f.host_text);
+    if (f.collector_text != null) setCollectorText(f.collector_text);
+    if (f.full_script != null) setFullScriptText(f.full_script);
+    setVoiceEngine((f.engine as "cloud" | "browser") || "cloud");
+    stopLocalSpeaking();
+    if (signedUrl) {
+      setAudioUrl(signedUrl);
+      setAudioName(f.name.endsWith(".mp3") ? f.name : `${f.name}.mp3`);
+      setIsPlaying(false);
+      setTimeout(() => {
+        if (audioRef.current) {
+          audioRef.current.load();
+          audioRef.current.play().catch(() => {});
+          setIsPlaying(true);
+        }
+      }, 150);
+    } else {
+      setAudioUrl(null);
+    }
+    setError(null);
   };
 
   // Helper to parse the full Arabic script into structured turn-by-turn speaker dialogues
@@ -372,9 +460,22 @@ export default function App() {
       stopLocalSpeaking();
       
       setAudioUrl(url);
-      setAudioName(isFullScript ? `الحلقة_الكاملة_بودكاست_القطاع_${Date.now()}.mp3` : `حلقة_بودكاست_كاملة_${Date.now()}.mp3`);
+      const fname = isFullScript ? `الحلقة_الكاملة_بودكاست_القطاع_${Date.now()}.mp3` : `حلقة_بودكاست_كاملة_${Date.now()}.mp3`;
+      setAudioName(fname);
       setIsPlaying(false);
-      
+
+      autoSaveGeneratedFile({
+        name: fname,
+        kind: isFullScript ? "full-episode" : "dialogue",
+        engine: "cloud",
+        audioBlob: blob,
+        hostText: isFullScript ? undefined : hostText,
+        collectorText: isFullScript ? undefined : collectorText,
+        fullScript: isFullScript ? fullScriptText : undefined,
+        hostVoice: isFullScript ? "Charon" : hostVoice,
+        collectorVoice: isFullScript ? "Fenrir" : collectorVoice,
+      });
+
       // Auto-play
       setTimeout(() => {
         if (audioRef.current) {
@@ -650,7 +751,23 @@ export default function App() {
             <span>صوت المتصفح البديل (مجاني ومفتوح)</span>
           </button>
         </div>
+
+        <button
+          onClick={() => setLibraryOpen(true)}
+          className="mr-3 px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 bg-gradient-to-l from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white shadow-lg shadow-indigo-600/20 cursor-pointer transition-all"
+          title="عرض الملفات المولّدة المحفوظة"
+        >
+          <Database className="w-4 h-4" />
+          <span>الملفات المولّدة</span>
+        </button>
       </header>
+
+      <GeneratedFilesPanel
+        open={libraryOpen}
+        onClose={() => setLibraryOpen(false)}
+        onLoad={handleLoadFromLibrary}
+        refreshTick={libraryRefresh}
+      />
 
       {/* Main Container */}
       <main className="flex-grow max-w-7xl w-full mx-auto px-4 md:px-10 py-6 md:py-8 flex flex-col gap-6">
