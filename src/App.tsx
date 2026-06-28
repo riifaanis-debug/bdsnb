@@ -704,63 +704,75 @@ export default function App() {
       )}
 
       {/* Header Navigation */}
-      <header className="h-20 flex items-center justify-between px-6 md:px-12 border-b border-slate-800 bg-[#0B0F19]/80 backdrop-blur-md sticky top-0 z-20">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/20">
-            <Mic className="w-6 h-6 text-white animate-pulse" />
+      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-3 sm:px-6 md:px-12 py-3 sm:h-20 border-b border-slate-800 bg-[#0B0F19]/80 backdrop-blur-md sticky top-0 z-20">
+        <div className="flex items-center justify-between gap-3 w-full sm:w-auto">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 shrink-0 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/20">
+              <Mic className="w-4 h-4 sm:w-6 sm:h-6 text-white animate-pulse" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-sm sm:text-xl md:text-2xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-l from-slate-100 to-slate-400 truncate">
+                بودكاست من داخل القطاع
+              </h1>
+              <p className="text-[10px] md:text-xs text-slate-400 hidden sm:block">منصة الإنتاج الصوتي باللهجة السعودية العامية البسيطة</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-xl md:text-2xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-l from-slate-100 to-slate-400">
-              بودكاست من داخل القطاع
-            </h1>
-            <p className="text-[10px] md:text-xs text-slate-400 hidden sm:block">منصة الإنتاج الصوتي باللهجة السعودية العامية البسيطة</p>
-          </div>
+
+          <button
+            onClick={() => setLibraryOpen(true)}
+            className="sm:hidden shrink-0 px-2.5 py-1.5 rounded-full text-[10px] font-bold flex items-center gap-1 bg-gradient-to-l from-indigo-600 to-indigo-500 text-white shadow cursor-pointer"
+            title="عرض الملفات المولّدة المحفوظة"
+          >
+            <Database className="w-3.5 h-3.5" />
+            <span>الملفات</span>
+          </button>
         </div>
-        
+
         {/* Active Engine Switcher (Sleek layout) */}
-        <div className="flex gap-2 items-center bg-slate-900/90 border border-slate-800 rounded-full p-1.5">
+        <div className="flex gap-1 sm:gap-2 items-center bg-slate-900/90 border border-slate-800 rounded-full p-1 sm:p-1.5 w-full sm:w-auto">
           <button
             id="btn-engine-cloud"
             onClick={() => {
               setVoiceEngine("cloud");
               setError(null);
             }}
-            className={`px-3 py-1.5 rounded-full text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+            className={`flex-1 sm:flex-none px-2 sm:px-3 py-1.5 rounded-full text-[10px] sm:text-[11px] font-bold flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer ${
               voiceEngine === "cloud"
                 ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10"
                 : "text-slate-400 hover:text-slate-200"
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>صوت الذكاء الاصطناعي (Gemini)</span>
+            <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
+            <span className="truncate"><span className="sm:hidden">Gemini AI</span><span className="hidden sm:inline">صوت الذكاء الاصطناعي (Gemini)</span></span>
           </button>
-          
+
           <button
             id="btn-engine-browser"
             onClick={() => {
               setVoiceEngine("browser");
               setError(null);
             }}
-            className={`px-3 py-1.5 rounded-full text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+            className={`flex-1 sm:flex-none px-2 sm:px-3 py-1.5 rounded-full text-[10px] sm:text-[11px] font-bold flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer ${
               voiceEngine === "browser"
                 ? "bg-amber-600 text-white shadow-md shadow-amber-600/10"
                 : "text-slate-400 hover:text-slate-200"
             }`}
           >
-            <Activity className="w-3.5 h-3.5" />
-            <span>صوت المتصفح البديل (مجاني ومفتوح)</span>
+            <Activity className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
+            <span className="truncate"><span className="sm:hidden">المتصفح</span><span className="hidden sm:inline">صوت المتصفح البديل (مجاني ومفتوح)</span></span>
           </button>
         </div>
 
         <button
           onClick={() => setLibraryOpen(true)}
-          className="mr-3 px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 bg-gradient-to-l from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white shadow-lg shadow-indigo-600/20 cursor-pointer transition-all"
+          className="hidden sm:flex mr-3 px-4 py-2 rounded-full text-xs font-bold items-center gap-2 bg-gradient-to-l from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white shadow-lg shadow-indigo-600/20 cursor-pointer transition-all"
           title="عرض الملفات المولّدة المحفوظة"
         >
           <Database className="w-4 h-4" />
           <span>الملفات المولّدة</span>
         </button>
       </header>
+
 
       <GeneratedFilesPanel
         open={libraryOpen}
