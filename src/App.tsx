@@ -460,9 +460,22 @@ export default function App() {
       stopLocalSpeaking();
       
       setAudioUrl(url);
-      setAudioName(isFullScript ? `الحلقة_الكاملة_بودكاست_القطاع_${Date.now()}.mp3` : `حلقة_بودكاست_كاملة_${Date.now()}.mp3`);
+      const fname = isFullScript ? `الحلقة_الكاملة_بودكاست_القطاع_${Date.now()}.mp3` : `حلقة_بودكاست_كاملة_${Date.now()}.mp3`;
+      setAudioName(fname);
       setIsPlaying(false);
-      
+
+      autoSaveGeneratedFile({
+        name: fname,
+        kind: isFullScript ? "full-episode" : "dialogue",
+        engine: "cloud",
+        audioBlob: blob,
+        hostText: isFullScript ? undefined : hostText,
+        collectorText: isFullScript ? undefined : collectorText,
+        fullScript: isFullScript ? fullScriptText : undefined,
+        hostVoice: isFullScript ? "Charon" : hostVoice,
+        collectorVoice: isFullScript ? "Fenrir" : collectorVoice,
+      });
+
       // Auto-play
       setTimeout(() => {
         if (audioRef.current) {
