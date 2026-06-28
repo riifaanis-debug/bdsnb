@@ -402,8 +402,8 @@ export default function App() {
       const payload = isFullScript 
         ? {
             fullScript: fullScriptText,
-            hostVoice: "Charon",
-            collectorVoice: "Fenrir"
+            hostVoice,
+            collectorVoice,
           }
         : {
             hostText,
