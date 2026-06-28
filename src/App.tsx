@@ -194,9 +194,22 @@ export default function App() {
       stopLocalSpeaking();
       
       setAudioUrl(url);
-      setAudioName(`${role === "host" ? "مذيع" : "محصل"}_بودكاست_${Date.now()}.mp3`);
+      const fname = `${role === "host" ? "مذيع" : "محصل"}_بودكاست_${Date.now()}.mp3`;
+      setAudioName(fname);
       setIsPlaying(false);
-      
+
+      // Auto-save to library
+      autoSaveGeneratedFile({
+        name: fname,
+        kind: role === "host" ? "single-host" : "single-collector",
+        engine: "cloud",
+        audioBlob: blob,
+        hostText: role === "host" ? text : undefined,
+        collectorText: role === "collector" ? text : undefined,
+        hostVoice: role === "host" ? voice : undefined,
+        collectorVoice: role === "collector" ? voice : undefined,
+      });
+
       // Auto-play the newly generated audio
       setTimeout(() => {
         if (audioRef.current) {
