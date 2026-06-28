@@ -458,8 +458,8 @@ export default function App() {
         hostText: isFullScript ? undefined : hostText,
         collectorText: isFullScript ? undefined : collectorText,
         fullScript: isFullScript ? fullScriptText : undefined,
-        hostVoice: isFullScript ? "Charon" : hostVoice,
-        collectorVoice: isFullScript ? "Fenrir" : collectorVoice,
+        hostVoice,
+        collectorVoice,
       });
 
       // Auto-play
