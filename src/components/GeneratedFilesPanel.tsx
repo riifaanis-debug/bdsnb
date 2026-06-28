@@ -119,27 +119,28 @@ export default function GeneratedFilesPanel({ open, onClose, onLoad, refreshTick
     <div className="fixed inset-0 z-50 flex" dir="rtl">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div className="relative ml-auto w-full max-w-2xl h-full bg-[#0B0F19] border-l border-slate-800 shadow-2xl flex flex-col">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-900/50">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center">
-              <Database className="w-5 h-5 text-indigo-400" />
+        <div className="flex items-center justify-between px-3 sm:px-6 py-3 sm:py-4 border-b border-slate-800 bg-slate-900/50 gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 shrink-0 rounded-lg bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center">
+              <Database className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-400" />
             </div>
-            <div>
-              <h2 className="font-black text-slate-100 text-lg">الملفات المولّدة</h2>
-              <p className="text-[11px] text-slate-400">سجل تلقائي لكل الحوارات والملفات الصوتية</p>
+            <div className="min-w-0">
+              <h2 className="font-black text-slate-100 text-sm sm:text-lg truncate">الملفات المولّدة</h2>
+              <p className="text-[10px] sm:text-[11px] text-slate-400 truncate">سجل تلقائي لكل الحوارات والملفات الصوتية</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button onClick={load} className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer" title="تحديث">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            <button onClick={load} className="p-1.5 sm:p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer" title="تحديث">
               <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
             </button>
-            <button onClick={onClose} className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer">
-              <X className="w-5 h-5" />
+            <button onClick={onClose} className="p-1.5 sm:p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer">
+              <X className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2.5 sm:space-y-3">
+
           {error && (
             <div className="bg-red-500/10 border border-red-500/30 text-red-300 px-3 py-2 rounded-lg text-xs">{error}</div>
           )}

@@ -704,63 +704,75 @@ export default function App() {
       )}
 
       {/* Header Navigation */}
-      <header className="h-20 flex items-center justify-between px-6 md:px-12 border-b border-slate-800 bg-[#0B0F19]/80 backdrop-blur-md sticky top-0 z-20">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/20">
-            <Mic className="w-6 h-6 text-white animate-pulse" />
+      <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-3 sm:px-6 md:px-12 py-3 sm:h-20 border-b border-slate-800 bg-[#0B0F19]/80 backdrop-blur-md sticky top-0 z-20">
+        <div className="flex items-center justify-between gap-3 w-full sm:w-auto">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 shrink-0 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/20">
+              <Mic className="w-4 h-4 sm:w-6 sm:h-6 text-white animate-pulse" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-sm sm:text-xl md:text-2xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-l from-slate-100 to-slate-400 truncate">
+                بودكاست من داخل القطاع
+              </h1>
+              <p className="text-[10px] md:text-xs text-slate-400 hidden sm:block">منصة الإنتاج الصوتي باللهجة السعودية العامية البسيطة</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-xl md:text-2xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-l from-slate-100 to-slate-400">
-              بودكاست من داخل القطاع
-            </h1>
-            <p className="text-[10px] md:text-xs text-slate-400 hidden sm:block">منصة الإنتاج الصوتي باللهجة السعودية العامية البسيطة</p>
-          </div>
+
+          <button
+            onClick={() => setLibraryOpen(true)}
+            className="sm:hidden shrink-0 px-2.5 py-1.5 rounded-full text-[10px] font-bold flex items-center gap-1 bg-gradient-to-l from-indigo-600 to-indigo-500 text-white shadow cursor-pointer"
+            title="عرض الملفات المولّدة المحفوظة"
+          >
+            <Database className="w-3.5 h-3.5" />
+            <span>الملفات</span>
+          </button>
         </div>
-        
+
         {/* Active Engine Switcher (Sleek layout) */}
-        <div className="flex gap-2 items-center bg-slate-900/90 border border-slate-800 rounded-full p-1.5">
+        <div className="flex gap-1 sm:gap-2 items-center bg-slate-900/90 border border-slate-800 rounded-full p-1 sm:p-1.5 w-full sm:w-auto">
           <button
             id="btn-engine-cloud"
             onClick={() => {
               setVoiceEngine("cloud");
               setError(null);
             }}
-            className={`px-3 py-1.5 rounded-full text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+            className={`flex-1 sm:flex-none px-2 sm:px-3 py-1.5 rounded-full text-[10px] sm:text-[11px] font-bold flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer ${
               voiceEngine === "cloud"
                 ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10"
                 : "text-slate-400 hover:text-slate-200"
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>صوت الذكاء الاصطناعي (Gemini)</span>
+            <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
+            <span className="truncate"><span className="sm:hidden">Gemini AI</span><span className="hidden sm:inline">صوت الذكاء الاصطناعي (Gemini)</span></span>
           </button>
-          
+
           <button
             id="btn-engine-browser"
             onClick={() => {
               setVoiceEngine("browser");
               setError(null);
             }}
-            className={`px-3 py-1.5 rounded-full text-[11px] font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+            className={`flex-1 sm:flex-none px-2 sm:px-3 py-1.5 rounded-full text-[10px] sm:text-[11px] font-bold flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer ${
               voiceEngine === "browser"
                 ? "bg-amber-600 text-white shadow-md shadow-amber-600/10"
                 : "text-slate-400 hover:text-slate-200"
             }`}
           >
-            <Activity className="w-3.5 h-3.5" />
-            <span>صوت المتصفح البديل (مجاني ومفتوح)</span>
+            <Activity className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
+            <span className="truncate"><span className="sm:hidden">المتصفح</span><span className="hidden sm:inline">صوت المتصفح البديل (مجاني ومفتوح)</span></span>
           </button>
         </div>
 
         <button
           onClick={() => setLibraryOpen(true)}
-          className="mr-3 px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 bg-gradient-to-l from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white shadow-lg shadow-indigo-600/20 cursor-pointer transition-all"
+          className="hidden sm:flex mr-3 px-4 py-2 rounded-full text-xs font-bold items-center gap-2 bg-gradient-to-l from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white shadow-lg shadow-indigo-600/20 cursor-pointer transition-all"
           title="عرض الملفات المولّدة المحفوظة"
         >
           <Database className="w-4 h-4" />
           <span>الملفات المولّدة</span>
         </button>
       </header>
+
 
       <GeneratedFilesPanel
         open={libraryOpen}
@@ -770,56 +782,56 @@ export default function App() {
       />
 
       {/* Main Container */}
-      <main className="flex-grow max-w-7xl w-full mx-auto px-4 md:px-10 py-6 md:py-8 flex flex-col gap-6">
+      <main className="flex-grow max-w-7xl w-full mx-auto px-3 sm:px-4 md:px-10 py-4 sm:py-6 md:py-8 pb-48 sm:pb-32 flex flex-col gap-4 sm:gap-6">
         
         {/* Banner with brief info and Script presets selection */}
-        <div className="bg-gradient-to-r from-indigo-950/40 to-slate-900/60 border border-slate-800 rounded-2xl p-6 relative overflow-hidden shadow-2xl">
+        <div className="bg-gradient-to-r from-indigo-950/40 to-slate-900/60 border border-slate-800 rounded-2xl p-4 sm:p-6 relative overflow-hidden shadow-2xl">
           <div className="absolute top-0 left-0 p-8 opacity-5">
             <Mic className="w-40 h-40" />
           </div>
           <div className="relative z-10">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-              <div className="flex items-center gap-2 text-indigo-400 text-sm font-bold">
-                <Sparkles className="w-4 h-4 animate-bounce" />
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3 sm:mb-4">
+              <div className="flex items-center gap-2 text-indigo-400 text-xs sm:text-sm font-bold">
+                <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-bounce" />
                 <span>أهلاً بك في منصة البودكاست المبتكرة</span>
               </div>
-              
+
               {/* Notice badge if automatic fallback happened */}
               {quotaExceededNotice && (
-                <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs px-3 py-1 rounded-lg flex items-center gap-1.5">
-                  <Info className="w-3.5 h-3.5 animate-pulse" />
+                <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] sm:text-xs px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+                  <Info className="w-3 h-3 sm:w-3.5 sm:h-3.5 animate-pulse shrink-0" />
                   <span>تم تفعيل الوضع المحلي لضمان استمرارية التشغيل</span>
                 </div>
               )}
             </div>
 
-            <h2 className="text-xl md:text-2xl font-bold text-slate-100 mb-2">
+            <h2 className="text-base sm:text-xl md:text-2xl font-bold text-slate-100 mb-1.5 sm:mb-2">
               حوار تفاعلي طبيعي بلهجة سعودية بسيطة!
             </h2>
-            <p className="text-slate-400 text-xs md:text-sm max-w-3xl leading-relaxed mb-6">
+            <p className="text-slate-400 text-[11px] sm:text-xs md:text-sm max-w-3xl leading-relaxed mb-4 sm:mb-6">
               اكتب النص لكل شخصية، واختر نبرة الصوت المفضلة، وسيقوم النظام بتوليد الكلام بلهجة عامية دقيقة ومخارج حروف واضحة. حدد أحد السيناريوهات الجاهزة بالأسفل لتجربتها مباشرة!
             </p>
 
             {/* Quick Presets Selector */}
             <div>
-              <div className="text-xs font-bold text-slate-400 mb-3 block">اختر سيناريو وحوار جاهز للتجربة السريعة:</div>
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+              <div className="text-[11px] sm:text-xs font-bold text-slate-400 mb-2 sm:mb-3 block">اختر سيناريو وحوار جاهز للتجربة السريعة:</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
                 {SAMPLE_SCRIPTS.map((script) => (
                   <button
                     key={script.id}
                     id={`preset-btn-${script.id}`}
                     onClick={() => handleApplyPreset(script)}
-                    className={`text-right p-3 rounded-xl border transition-all duration-200 cursor-pointer ${
+                    className={`text-right p-2.5 sm:p-3 rounded-xl border transition-all duration-200 cursor-pointer ${
                       activePreset === script.id
                         ? "bg-indigo-600/20 border-indigo-500 shadow-lg shadow-indigo-500/5 text-slate-100"
                         : "bg-slate-900/40 border-slate-800/80 hover:bg-slate-800/50 hover:border-slate-700 text-slate-300"
                     }`}
                   >
-                    <div className="font-bold text-sm mb-1 flex items-center justify-between">
+                    <div className="font-bold text-xs sm:text-sm mb-1 flex items-center justify-between gap-2">
                       <span className="truncate">{script.title}</span>
-                      {activePreset === script.id && <span className="text-[10px] bg-indigo-500 text-white px-1.5 py-0.5 rounded-md flex-shrink-0">محدد</span>}
+                      {activePreset === script.id && <span className="text-[9px] sm:text-[10px] bg-indigo-500 text-white px-1.5 py-0.5 rounded-md shrink-0">محدد</span>}
                     </div>
-                    <p className="text-xs text-slate-400 line-clamp-1">{script.description}</p>
+                    <p className="text-[10px] sm:text-xs text-slate-400 line-clamp-1">{script.description}</p>
                   </button>
                 ))}
               </div>
@@ -829,7 +841,8 @@ export default function App() {
 
         {/* Global Error/Warning Banner if any */}
         {error && (
-          <div className="bg-amber-500/10 border border-amber-500/30 text-amber-300 px-4 py-3 rounded-xl flex items-start gap-3 text-sm animate-fade-in" id="error-banner">
+          <div className="bg-amber-500/10 border border-amber-500/30 text-amber-300 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl flex items-start gap-2 sm:gap-3 text-xs sm:text-sm animate-fade-in" id="error-banner">
+
             <AlertCircle className="w-5 h-5 flex-shrink-0 text-amber-400 mt-0.5" />
             <div className="flex-1 leading-relaxed">{error}</div>
             <button onClick={() => setError(null)} className="text-xs hover:underline text-amber-400 font-bold cursor-pointer self-center">إغلاق</button>
@@ -858,31 +871,32 @@ export default function App() {
 
         {/* Conditional Layouts based on Preset Mode */}
         {activePreset === "full_episode" ? (
-          <div className="w-full bg-slate-900/40 border border-slate-800 rounded-2xl p-6 flex flex-col shadow-lg relative min-h-[500px]" id="full-episode-view">
+          <div className="w-full bg-slate-900/40 border border-slate-800 rounded-2xl p-3 sm:p-6 flex flex-col shadow-lg relative min-h-[400px] sm:min-h-[500px]" id="full-episode-view">
+
             {/* Full Episode Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800/80">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-indigo-500/10 flex items-center justify-center border border-indigo-500/30">
-                  <Mic className="w-6 h-6 text-indigo-400" />
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-slate-800/80">
+              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                <div className="w-9 h-9 sm:w-12 sm:h-12 shrink-0 rounded-full bg-indigo-500/10 flex items-center justify-center border border-indigo-500/30">
+                  <Mic className="w-4 h-4 sm:w-6 sm:h-6 text-indigo-400" />
                 </div>
-                <div>
-                  <h2 className="font-bold text-slate-100 text-lg">النص الحواري الكامل للحلقة المعتمدة</h2>
-                  <p className="text-xs text-indigo-400 font-bold uppercase tracking-wider">
-                    المذيع: نبرة شارون (Charon) • المحصل: نبرة فينرير (Fenrir)
+                <div className="min-w-0">
+                  <h2 className="font-bold text-slate-100 text-sm sm:text-lg truncate">النص الحواري الكامل للحلقة المعتمدة</h2>
+                  <p className="text-[10px] sm:text-xs text-indigo-400 font-bold uppercase tracking-wider truncate">
+                    المذيع: Charon • المحصل: Fenrir
                   </p>
                 </div>
               </div>
-              
+
               {/* Informational locked voices badge */}
-              <div className="bg-indigo-500/10 border border-indigo-500/20 px-3 py-1.5 rounded-xl text-xs text-indigo-300 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-indigo-400" />
+              <div className="bg-indigo-500/10 border border-indigo-500/20 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl text-[10px] sm:text-xs text-indigo-300 flex items-center gap-1.5 sm:gap-2 self-start sm:self-auto">
+                <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-400 shrink-0" />
                 <span className="font-bold">توليد متصل بملف واحد (Gemini)</span>
               </div>
             </div>
 
             {/* Elegant notice about the constraints */}
-            <div className="bg-indigo-950/40 border border-indigo-900/40 rounded-xl p-4 mb-6 text-xs text-slate-300 leading-relaxed flex items-start gap-3">
-              <Info className="w-5 h-5 text-indigo-400 flex-shrink-0 mt-0.5" />
+            <div className="bg-indigo-950/40 border border-indigo-900/40 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 text-[11px] sm:text-xs text-slate-300 leading-relaxed flex items-start gap-2 sm:gap-3">
+              <Info className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-400 flex-shrink-0 mt-0.5" />
               <div>
                 <span className="font-bold block text-slate-100 mb-1">⚠️ شروط الإنتاج الصوتي الإلزامية:</span>
                 تلتزم المنصة بتوليد كامل نص الحوار المعتمد حرفياً ١٠٠٪ دفعة واحدة بملف صوتي واحد دون تعديل لضمان الأداء السلس باللهجة السعودية العامية البسيطة. تم قفل محرك الصوت على خيار السحابي لخدمة <strong className="text-white">Gemini AI</strong> التزاماً بالشروط.
@@ -890,23 +904,23 @@ export default function App() {
             </div>
 
             {/* Edit/Preview Toggle */}
-            <div className="flex items-center justify-between gap-2 mb-3">
-              <div className="flex items-center gap-2 text-xs text-slate-400">
-                <Info className="w-4 h-4 text-indigo-400" />
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+              <div className="flex items-start gap-2 text-[11px] sm:text-xs text-slate-400 min-w-0">
+                <Info className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-400 shrink-0 mt-0.5" />
                 <span>يمكنك تعديل النص أو إضافة فقرات جديدة. ابدأ كل فقرة بـ <strong className="text-indigo-300">المذيع:</strong> أو <strong className="text-amber-300">المحصّل:</strong> وافصل بين الفقرات بسطر فارغ.</span>
               </div>
               <div className="flex gap-2 flex-shrink-0">
                 <button
                   type="button"
                   onClick={() => setIsEditingScript((v) => !v)}
-                  className="px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition-all cursor-pointer"
+                  className="flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition-all cursor-pointer"
                 >
                   {isEditingScript ? "معاينة" : "تعديل النص"}
                 </button>
                 <button
                   type="button"
                   onClick={() => setFullScriptText(SAMPLE_SCRIPTS.find(s => s.id === "full_episode")?.fullScript || "")}
-                  className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 transition-all cursor-pointer"
+                  className="flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 transition-all cursor-pointer"
                   title="إعادة تعيين النص الأصلي"
                 >
                   استعادة
@@ -920,45 +934,45 @@ export default function App() {
                 value={fullScriptText}
                 onChange={(e) => setFullScriptText(e.target.value)}
                 dir="rtl"
-                className="w-full bg-slate-950/60 rounded-xl border border-indigo-800/60 focus:border-indigo-500 outline-none p-6 h-[480px] text-slate-100 leading-relaxed text-sm font-sans resize-none"
+                className="w-full bg-slate-950/60 rounded-xl border border-indigo-800/60 focus:border-indigo-500 outline-none p-3 sm:p-6 h-[320px] sm:h-[480px] text-slate-100 leading-relaxed text-xs sm:text-sm font-sans resize-none"
                 placeholder="اكتب الحوار هنا..."
               />
             ) : (
-              <div className="bg-slate-950/60 rounded-xl border border-slate-800/80 p-6 max-h-[480px] overflow-y-auto flex flex-col gap-4 font-sans text-sm">
+              <div className="bg-slate-950/60 rounded-xl border border-slate-800/80 p-3 sm:p-6 max-h-[360px] sm:max-h-[480px] overflow-y-auto flex flex-col gap-3 sm:gap-4 font-sans text-sm">
                 {fullScriptText.split("\n\n").map((paragraph, index) => {
                   const isHost = paragraph.startsWith("المذيع:");
                   const isCollector = paragraph.startsWith("المحصّل:") || paragraph.startsWith("المحصل:");
                   const textContent = paragraph.replace(/^(المذيع:|المحصّل:|المحصل:)\s*/, "").trim();
-                  
+
                   if (!textContent) return null;
 
                   return (
-                    <div 
-                      key={index} 
-                      className={`flex flex-col gap-1.5 p-3.5 rounded-xl border transition-all ${
-                        isHost 
-                          ? "bg-indigo-950/10 border-indigo-950/30 ml-8 text-right" 
-                          : isCollector 
-                          ? "bg-amber-950/5 border-amber-950/10 mr-8 text-right"
-                          : "bg-slate-900/10 border-slate-800/40 mx-4"
+                    <div
+                      key={index}
+                      className={`flex flex-col gap-1.5 p-2.5 sm:p-3.5 rounded-xl border transition-all break-words ${
+                        isHost
+                          ? "bg-indigo-950/10 border-indigo-950/30 sm:ml-8 text-right"
+                          : isCollector
+                          ? "bg-amber-950/5 border-amber-950/10 sm:mr-8 text-right"
+                          : "bg-slate-900/10 border-slate-800/40 sm:mx-4"
                       }`}
                     >
-                      <div className="flex items-center gap-2 mb-1">
+                      <div className="flex items-center flex-wrap gap-1.5 sm:gap-2 mb-1">
                         {isHost ? (
                           <>
-                            <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-indigo-600 text-white">المذيع</span>
-                            <span className="text-[10px] text-indigo-400 font-bold">بصوت Charon (رجالي سعودي عامي)</span>
+                            <span className="px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-black bg-indigo-600 text-white">المذيع</span>
+                            <span className="text-[9px] sm:text-[10px] text-indigo-400 font-bold">بصوت Charon</span>
                           </>
                         ) : isCollector ? (
                           <>
-                            <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-amber-600 text-slate-950">المحصل</span>
-                            <span className="text-[10px] text-amber-400 font-bold">بصوت Fenrir (رجالي سعودي عامي)</span>
+                            <span className="px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-black bg-amber-600 text-slate-950">المحصل</span>
+                            <span className="text-[9px] sm:text-[10px] text-amber-400 font-bold">بصوت Fenrir</span>
                           </>
                         ) : (
-                          <span className="text-[10px] text-slate-400 font-bold">راوي</span>
+                          <span className="text-[9px] sm:text-[10px] text-slate-400 font-bold">راوي</span>
                         )}
                       </div>
-                      <p className="text-slate-200 leading-relaxed text-xs md:text-sm">{textContent}</p>
+                      <p className="text-slate-200 leading-relaxed text-[12px] sm:text-sm">{textContent}</p>
                     </div>
                   );
                 })}
@@ -967,57 +981,58 @@ export default function App() {
 
 
             {/* Large generate button for the full episode */}
-            <div className="mt-6">
+            <div className="mt-4 sm:mt-6">
               {voiceEngine === "browser" ? (
                 <button
                   id="btn-play-full-episode"
                   disabled={isLoading}
                   onClick={generateCompleteDialogue}
-                  className="w-full py-4 bg-gradient-to-l from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 disabled:opacity-50 text-white rounded-xl font-bold flex items-center justify-center gap-3 transition-all shadow-xl shadow-amber-600/20 active:scale-[0.99] cursor-pointer text-base md:text-lg"
+                  className="w-full py-3 sm:py-4 px-3 bg-gradient-to-l from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 disabled:opacity-50 text-white rounded-xl font-bold flex items-center justify-center gap-2 sm:gap-3 transition-all shadow-xl shadow-amber-600/20 active:scale-[0.99] cursor-pointer text-xs sm:text-base md:text-lg text-center"
                 >
-                  <Activity className="w-5 h-5 animate-pulse text-amber-100" />
-                  تشغيل الحلقة الكاملة عبر محاكاة المتصفح (مجاناً وبلا حدود)
+                  <Activity className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse text-amber-100 shrink-0" />
+                  <span>تشغيل الحلقة الكاملة عبر محاكاة المتصفح</span>
                 </button>
               ) : (
                 <button
                   id="btn-play-full-episode"
                   disabled={isLoading}
                   onClick={generateCompleteDialogue}
-                  className="w-full py-4 bg-gradient-to-l from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 disabled:opacity-50 text-white rounded-xl font-bold flex items-center justify-center gap-3 transition-all shadow-xl shadow-indigo-600/20 active:scale-[0.99] cursor-pointer text-base md:text-lg"
+                  className="w-full py-3 sm:py-4 px-3 bg-gradient-to-l from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 disabled:opacity-50 text-white rounded-xl font-bold flex items-center justify-center gap-2 sm:gap-3 transition-all shadow-xl shadow-indigo-600/20 active:scale-[0.99] cursor-pointer text-xs sm:text-base md:text-lg text-center"
                 >
-                  <Sparkles className="w-5 h-5 animate-pulse" />
-                  إنتاج الحلقة الكاملة بملف صوتي واحد (صوت Gemini)
+                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse shrink-0" />
+                  <span>إنتاج الحلقة الكاملة بملف صوتي واحد (Gemini)</span>
                 </button>
               )}
             </div>
           </div>
+
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8">
+
             {/* Section 1: The Host (المذيع) */}
             <section className="flex flex-col gap-4" id="section-host">
-              <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 flex flex-col h-full shadow-lg relative">
-                
+              <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-3 sm:p-6 flex flex-col h-full shadow-lg relative">
+
                 {/* Header inside host card */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-800/80">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-indigo-500/10 flex items-center justify-center border border-indigo-500/30">
-                      <Mic className="w-6 h-6 text-indigo-400" />
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-3 sm:mb-4 pb-3 sm:pb-4 border-b border-slate-800/80">
+                  <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                    <div className="w-9 h-9 sm:w-12 sm:h-12 shrink-0 rounded-full bg-indigo-500/10 flex items-center justify-center border border-indigo-500/30">
+                      <Mic className="w-4 h-4 sm:w-6 sm:h-6 text-indigo-400" />
                     </div>
-                    <div>
-                      <h2 className="font-bold text-slate-100 text-lg">نص المذيع</h2>
-                      <p className="text-xs text-indigo-400 font-bold uppercase tracking-wider">صوت هادئ ومحترف • مقدم الحلقات</p>
+                    <div className="min-w-0">
+                      <h2 className="font-bold text-slate-100 text-sm sm:text-lg">نص المذيع</h2>
+                      <p className="text-[10px] sm:text-xs text-indigo-400 font-bold uppercase tracking-wider truncate">صوت هادئ ومحترف • مقدم الحلقات</p>
                     </div>
                   </div>
-                  
+
                   {/* Voice Selection */}
-                  <div className="flex flex-col">
+                  <div className="flex flex-col w-full sm:w-auto">
                     <label className="text-[10px] text-slate-400 mb-1 font-bold">نبرة صوت المذيع:</label>
                     <select
                       id="host-voice-select"
                       value={hostVoice}
                       onChange={(e) => setHostVoice(e.target.value)}
-                      className="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 cursor-pointer"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs text-slate-200 focus:outline-none focus:border-indigo-500 cursor-pointer"
                     >
                       {VOICE_OPTIONS.map((v) => (
                         <option key={v.value} value={v.value}>
@@ -1029,33 +1044,33 @@ export default function App() {
                 </div>
 
                 {/* Informative description */}
-                <p className="text-xs text-slate-400 mb-3 leading-relaxed">
+                <p className="text-[11px] sm:text-xs text-slate-400 mb-2 sm:mb-3 leading-relaxed">
                   {VOICE_OPTIONS.find(v => v.value === hostVoice)?.description}
                 </p>
-                
+
                 {/* Text Input area */}
                 <div className="flex-grow flex flex-col">
                   <textarea
                     id="host-textarea"
                     value={hostText}
                     onChange={(e) => setHostText(e.target.value)}
-                    className="flex-grow w-full bg-slate-950/50 border border-slate-800/80 rounded-xl p-4 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500/50 resize-none transition-colors min-h-[160px] text-sm leading-relaxed"
+                    className="flex-grow w-full bg-slate-950/50 border border-slate-800/80 rounded-xl p-3 sm:p-4 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500/50 resize-none transition-colors min-h-[140px] sm:min-h-[160px] text-[13px] sm:text-sm leading-relaxed"
                     placeholder="اكتب هنا النص الذي تريد أن يقوله المذيع بلهجة سعودية..."
                   ></textarea>
-                  <div className="flex justify-between text-[11px] text-slate-500 mt-2">
-                    <span>علامات الترقيم تضيف وقفات طبيعية كالبودكاست</span>
-                    <span>{hostText.length} حرفاً</span>
+                  <div className="flex justify-between text-[10px] sm:text-[11px] text-slate-500 mt-2 gap-2">
+                    <span className="truncate">علامات الترقيم تضيف وقفات طبيعية</span>
+                    <span className="shrink-0">{hostText.length} حرفاً</span>
                   </div>
                 </div>
-                
+
                 {/* Trigger single button */}
                 <button
                   id="btn-play-host"
                   disabled={isLoading}
                   onClick={() => generateSingleSpeaker("host")}
-                  className="mt-4 w-full py-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-600/10 active:scale-[0.98] cursor-pointer"
+                  className="mt-3 sm:mt-4 w-full py-2.5 sm:py-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-600/10 active:scale-[0.98] cursor-pointer text-xs sm:text-sm"
                 >
-                  <Volume2 className="w-5 h-5" />
+                  <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />
                   تشغيل صوت المذيع {voiceEngine === "browser" && "(محلياً)"}
                 </button>
               </div>
@@ -1063,28 +1078,28 @@ export default function App() {
 
             {/* Section 2: The Collector (المحصل) */}
             <section className="flex flex-col gap-4" id="section-collector">
-              <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 flex flex-col h-full shadow-lg relative">
-                
+              <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-3 sm:p-6 flex flex-col h-full shadow-lg relative">
+
                 {/* Header inside collector card */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-800/80">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center border border-amber-500/30">
-                      <User className="w-6 h-6 text-amber-400" />
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-3 sm:mb-4 pb-3 sm:pb-4 border-b border-slate-800/80">
+                  <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                    <div className="w-9 h-9 sm:w-12 sm:h-12 shrink-0 rounded-full bg-amber-500/10 flex items-center justify-center border border-amber-500/30">
+                      <User className="w-4 h-4 sm:w-6 sm:h-6 text-amber-400" />
                     </div>
-                    <div>
-                      <h2 className="font-bold text-slate-100 text-lg">نص المحصل</h2>
-                      <p className="text-xs text-amber-400 font-bold uppercase tracking-wider">صوت واقعي ومباشر • خبير وممارس القطاع</p>
+                    <div className="min-w-0">
+                      <h2 className="font-bold text-slate-100 text-sm sm:text-lg">نص المحصل</h2>
+                      <p className="text-[10px] sm:text-xs text-amber-400 font-bold uppercase tracking-wider truncate">صوت واقعي ومباشر • خبير القطاع</p>
                     </div>
                   </div>
-                  
+
                   {/* Voice Selection */}
-                  <div className="flex flex-col">
+                  <div className="flex flex-col w-full sm:w-auto">
                     <label className="text-[10px] text-slate-400 mb-1 font-bold">نبرة صوت المحصل:</label>
                     <select
                       id="collector-voice-select"
                       value={collectorVoice}
                       onChange={(e) => setCollectorVoice(e.target.value)}
-                      className="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500 cursor-pointer"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs text-slate-200 focus:outline-none focus:border-amber-500 cursor-pointer"
                     >
                       {VOICE_OPTIONS.map((v) => (
                         <option key={v.value} value={v.value}>
@@ -1096,33 +1111,33 @@ export default function App() {
                 </div>
 
                 {/* Informative description */}
-                <p className="text-xs text-slate-400 mb-3 leading-relaxed">
+                <p className="text-[11px] sm:text-xs text-slate-400 mb-2 sm:mb-3 leading-relaxed">
                   {VOICE_OPTIONS.find(v => v.value === collectorVoice)?.description}
                 </p>
-                
+
                 {/* Text Input area */}
                 <div className="flex-grow flex flex-col">
                   <textarea
                     id="collector-textarea"
                     value={collectorText}
                     onChange={(e) => setCollectorText(e.target.value)}
-                    className="flex-grow w-full bg-slate-950/50 border border-slate-800/80 rounded-xl p-4 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-amber-500/50 resize-none transition-colors min-h-[160px] text-sm leading-relaxed"
+                    className="flex-grow w-full bg-slate-950/50 border border-slate-800/80 rounded-xl p-3 sm:p-4 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-amber-500/50 resize-none transition-colors min-h-[140px] sm:min-h-[160px] text-[13px] sm:text-sm leading-relaxed"
                     placeholder="اكتب هنا النص الذي تريد أن يقوله المحصل بأسلوب سعودي بسيط..."
                   ></textarea>
-                  <div className="flex justify-between text-[11px] text-slate-500 mt-2">
-                    <span>يقال بلهجة شعبية تقريبية للشارع السعودي</span>
-                    <span>{collectorText.length} حرفاً</span>
+                  <div className="flex justify-between text-[10px] sm:text-[11px] text-slate-500 mt-2 gap-2">
+                    <span className="truncate">لهجة شعبية تقريبية للشارع السعودي</span>
+                    <span className="shrink-0">{collectorText.length} حرفاً</span>
                   </div>
                 </div>
-                
+
                 {/* Trigger single button */}
                 <button
                   id="btn-play-collector"
                   disabled={isLoading}
                   onClick={() => generateSingleSpeaker("collector")}
-                  className="mt-4 w-full py-3 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-amber-600/10 active:scale-[0.98] cursor-pointer"
+                  className="mt-3 sm:mt-4 w-full py-2.5 sm:py-3 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-amber-600/10 active:scale-[0.98] cursor-pointer text-xs sm:text-sm"
                 >
-                  <Volume2 className="w-5 h-5" />
+                  <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />
                   تشغيل صوت المحصل {voiceEngine === "browser" && "(محلياً)"}
                 </button>
               </div>
@@ -1131,26 +1146,27 @@ export default function App() {
           </div>
         )}
 
+
         {/* Quick Help Guide */}
-        <div className="bg-slate-900/20 border border-slate-800/50 rounded-xl p-4 flex gap-3 text-xs text-slate-400 items-start leading-relaxed">
-          <HelpCircle className="w-5 h-5 text-indigo-400 flex-shrink-0 mt-0.5" />
-          <div>
+        <div className="bg-slate-900/20 border border-slate-800/50 rounded-xl p-3 sm:p-4 flex gap-2 sm:gap-3 text-[11px] sm:text-xs text-slate-400 items-start leading-relaxed">
+          <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-400 flex-shrink-0 mt-0.5" />
+          <div className="min-w-0">
             <span className="font-bold text-slate-300 block mb-1">💡 نصائح لإنتاج أفضل جودة:</span>
             {activePreset === "full_episode" ? (
               <>
-                - اضغط على زر <strong className="text-slate-200">"إنتاج الحلقة الكاملة بملف صوتي واحد"</strong> بالأسفل لتوليد كامل الـ ٥ أجزاء معاً.
+                - اضغط على زر <strong className="text-slate-200">"إنتاج الحلقة الكاملة بملف صوتي واحد"</strong> بالأسفل لتوليد كامل الأجزاء معاً.
                 <br />
                 - يتميز توليد الحوار المتكامل بتنسيق نبرات ممتازة ومخارج حروف باللهجة السعودية العامية البسيطة جداً.
                 <br />
-                - الوقفات عند علامات الترقيم (الفواصل والوقفات ...) تساهم في إخراج العمل كالبودكاست الحقيقي المليء بالحياة والعمق.
+                - الوقفات عند علامات الترقيم تساهم في إخراج العمل كالبودكاست الحقيقي.
               </>
             ) : (
               <>
-                - يمكنك استخدام علامات المد والوقف لتمثيل السكتات والوقفات كالبودكاست الحقيقي مثل الفواصل والوقفات (...)
+                - يمكنك استخدام علامات المد والوقف لتمثيل السكتات والوقفات كالبودكاست الحقيقي.
                 <br />
                 - الوضع السحابي (Gemini) يمنحك أفضل أداء صوتي ومخارج سعودية طبيعية جداً.
                 <br />
-                - إذا نفدت الحصة اليومية للحساب المجاني، لا تقلق! اضغط على <strong className="text-slate-200">صوت المتصفح البديل</strong> في الأعلى لتستمر بإنتاج حلقاتك والاستماع إليها مجاناً وبلا حدود.
+                - إذا نفدت الحصة اليومية، اضغط على <strong className="text-slate-200">صوت المتصفح البديل</strong> في الأعلى للاستمرار مجاناً.
               </>
             )}
           </div>
@@ -1159,30 +1175,31 @@ export default function App() {
       </main>
 
       {/* Footer Player & Dialogue Generation Control Bar */}
-      <footer className="fixed bottom-0 left-0 right-0 z-30 bg-[#0B0F19]/95 border-t border-slate-800/80 px-4 md:px-10 py-4 shadow-2xl backdrop-blur-md flex flex-col md:flex-row items-center gap-4 justify-between">
-        
+      <footer className="fixed bottom-0 left-0 right-0 z-30 bg-[#0B0F19]/95 border-t border-slate-800/80 px-3 sm:px-4 md:px-10 py-2.5 sm:py-4 shadow-2xl backdrop-blur-md flex flex-col md:flex-row items-stretch md:items-center gap-2 sm:gap-4 justify-between">
+
         {/* Left Side: Audio Player Control (Conditional view) */}
-        <div className="w-full md:w-auto flex-1 flex flex-col gap-1.5 min-w-[280px]">
+        <div className="w-full md:w-auto flex-1 flex flex-col gap-1.5 md:min-w-[280px]">
           {audioUrl ? (
             <div>
-              <div className="flex justify-between items-end mb-1">
-                <span className="text-xs text-slate-300 font-bold flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                  الملف الصوتي الحالي:
-                  <span className="text-slate-400 font-normal truncate max-w-[150px]">{audioName.split("_")[0]}</span>
+              <div className="flex justify-between items-end mb-1 gap-2">
+                <span className="text-[11px] sm:text-xs text-slate-300 font-bold flex items-center gap-1.5 min-w-0">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+                  <span className="hidden sm:inline">الملف الصوتي الحالي:</span>
+                  <span className="sm:hidden">الحالي:</span>
+                  <span className="text-slate-400 font-normal truncate max-w-[120px] sm:max-w-[150px]">{audioName.split("_")[0]}</span>
                 </span>
-                <span className="text-[10px] text-slate-400 font-mono">
+                <span className="text-[10px] text-slate-400 font-mono shrink-0">
                   {formatTime(currentTime)} / {formatTime(duration)}
                 </span>
               </div>
-              
+
               {/* custom progress bar */}
-              <div 
+              <div
                 onClick={handleProgressClick}
-                className={`h-2 w-full bg-slate-800 rounded-full overflow-hidden relative ${audioUrl.startsWith("browser-native") ? "cursor-not-allowed" : "cursor-pointer group"}`}
+                className={`h-1.5 sm:h-2 w-full bg-slate-800 rounded-full overflow-hidden relative ${audioUrl.startsWith("browser-native") ? "cursor-not-allowed" : "cursor-pointer group"}`}
                 title={audioUrl.startsWith("browser-native") ? "التمرير غير متاح أثناء التشغيل المحلي" : "انقر لتغيير موضع التشغيل"}
               >
-                <div 
+                <div
                   className="absolute inset-y-0 right-0 bg-gradient-to-l from-indigo-500 to-amber-500 transition-all duration-100"
                   style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%`, right: 'auto', left: 0 }}
                 ></div>
@@ -1192,33 +1209,33 @@ export default function App() {
               </div>
 
               {/* Action Buttons for custom audio element */}
-              <div className="flex gap-4 mt-2 items-center">
+              <div className="flex flex-wrap gap-2 sm:gap-4 mt-2 items-center">
                 <button
                   id="btn-play-pause"
                   onClick={togglePlayPause}
-                  className="text-slate-200 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 px-3 py-1 rounded-lg text-xs flex items-center gap-1 transition-all cursor-pointer"
+                  className="text-slate-200 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 px-2.5 sm:px-3 py-1 rounded-lg text-[11px] sm:text-xs flex items-center gap-1 transition-all cursor-pointer"
                   title={isPlaying ? "إيقاف مؤقت" : "تشغيل"}
                 >
                   {isPlaying ? (
                     <>
-                      <Pause className="w-3.5 h-3.5" />
+                      <Pause className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                       <span>إيقاف</span>
                     </>
                   ) : (
                     <>
-                      <Play className="w-3.5 h-3.5" />
+                      <Play className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                       <span>تشغيل</span>
                     </>
                   )}
                 </button>
-                
+
                 <button
                   id="btn-restart"
                   onClick={restartAudio}
-                  className="text-slate-400 hover:text-white text-xs flex items-center gap-1 cursor-pointer"
+                  className="text-slate-400 hover:text-white text-[11px] sm:text-xs flex items-center gap-1 cursor-pointer"
                   title="إعادة من البداية"
                 >
-                  <RotateCcw className="w-3.5 h-3.5" />
+                  <RotateCcw className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                   <span>إعادة</span>
                 </button>
 
@@ -1227,44 +1244,45 @@ export default function App() {
                     id="btn-download"
                     href={audioUrl}
                     download={audioName}
-                    className="text-indigo-400 hover:text-indigo-300 text-xs flex items-center gap-1 font-bold cursor-pointer"
+                    className="text-indigo-400 hover:text-indigo-300 text-[11px] sm:text-xs flex items-center gap-1 font-bold cursor-pointer"
                     title="تحميل الملف الصوتي بصيغة MP3"
                   >
-                    <Download className="w-3.5 h-3.5" />
+                    <Download className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                     <span>تحميل MP3</span>
                   </a>
                 ) : (
-                  <span className="text-[10px] text-slate-500 cursor-not-allowed flex items-center gap-1" title="التحميل كملف MP3 يتطلب تفعيل الوضع السحابي (Gemini AI)">
-                    <Download className="w-3.5 h-3.5 text-slate-600" />
-                    <span>التحميل متاح في الوضع السحابي فقط</span>
+                  <span className="text-[10px] text-slate-500 cursor-not-allowed flex items-center gap-1" title="التحميل متاح في الوضع السحابي فقط">
+                    <Download className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-600" />
+                    <span className="hidden sm:inline">التحميل متاح في الوضع السحابي فقط</span>
+                    <span className="sm:hidden">السحابي فقط</span>
                   </span>
                 )}
               </div>
             </div>
           ) : (
-            <div className="text-slate-500 text-xs text-center md:text-right py-4">
-              لم يتم توليد أي مقطع صوتي بعد. اكتب النص بالأعلى ثم اضغط تشغيل أو توليد الحوار.
+            <div className="text-slate-500 text-[11px] sm:text-xs text-center md:text-right py-2 sm:py-4">
+              لم يتم توليد أي مقطع صوتي بعد. اكتب النص بالأعلى ثم اضغط تشغيل.
             </div>
           )}
         </div>
 
         {/* Center: Master Trigger Generate Complete Dialogue */}
-        <div className="flex-shrink-0 my-2 md:my-0">
+        <div className="flex-shrink-0">
           <button
             id="btn-generate-dialogue"
             disabled={isLoading}
             onClick={generateCompleteDialogue}
-            className="px-8 py-4 bg-white hover:bg-slate-100 disabled:bg-slate-400 disabled:cursor-not-allowed text-slate-950 font-black text-md md:text-lg rounded-2xl shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-3 active:scale-[0.98] cursor-pointer"
+            className="w-full md:w-auto px-4 sm:px-8 py-2.5 sm:py-4 bg-white hover:bg-slate-100 disabled:bg-slate-400 disabled:cursor-not-allowed text-slate-950 font-black text-xs sm:text-md md:text-lg rounded-xl sm:rounded-2xl shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-2 sm:gap-3 active:scale-[0.98] cursor-pointer"
           >
-            <div className="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
+              <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-indigo-600" />
             </div>
-            توليد الحوار كامل {voiceEngine === "browser" && "(محلياً)"}
+            <span className="truncate">توليد الحوار كامل {voiceEngine === "browser" && "(محلياً)"}</span>
           </button>
         </div>
 
         {/* Right Side: Format info */}
-        <div className="flex-1 flex justify-end items-center gap-4 hidden sm:flex">
+        <div className="flex-1 justify-end items-center gap-4 hidden md:flex">
           <div className="flex flex-col items-end">
             <p className="text-[10px] text-slate-400">تنسيق مخرج الصوت الحالي</p>
             <p className="text-xs font-bold text-slate-200">
@@ -1277,6 +1295,7 @@ export default function App() {
         </div>
 
       </footer>
+
     </div>
   );
 }
