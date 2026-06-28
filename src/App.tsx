@@ -45,15 +45,6 @@ export default function App() {
   const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const currentPlaySessionRef = useRef<number | null>(null);
 
-  // Auto lock config for the full episode
-  useEffect(() => {
-    if (activePreset === "full_episode") {
-      setVoiceEngine("cloud");
-      setHostVoice("Charon");
-      setCollectorVoice("Fenrir");
-    }
-  }, [activePreset]);
-
   // Cancel any speech synthesis on unmount
   useEffect(() => {
     return () => {
@@ -66,18 +57,13 @@ export default function App() {
     };
   }, []);
 
-  // Apply script preset
+  // Apply script preset (المستخدم حر باختيار صوت المذيع والمحصّل في كل الأوضاع)
   const handleApplyPreset = (script: PodcastScript) => {
-    if (script.id === "full_episode") {
-      setActivePreset(script.id);
-      setVoiceEngine("cloud");
-      setHostVoice("Charon");
-      setCollectorVoice("Fenrir");
-    } else {
+    if (script.id !== "full_episode") {
       setHostText(script.hostText);
       setCollectorText(script.collectorText);
-      setActivePreset(script.id);
     }
+    setActivePreset(script.id);
     setError(null);
   };
 
