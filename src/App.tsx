@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, MouseEvent } from "react";
-import { Mic, User, Music, Play, Pause, RotateCcw, Download, Sparkles, AlertCircle, Volume2, HelpCircle, Activity, Settings, Info } from "lucide-react";
+import { Mic, User, Music, Play, Pause, RotateCcw, Download, Sparkles, AlertCircle, Volume2, HelpCircle, Activity, Settings, Info, Database } from "lucide-react";
 import { VOICE_OPTIONS, SAMPLE_SCRIPTS, type VoiceOption, type PodcastScript } from "./data";
+import { supabase } from "@/integrations/supabase/client";
+import GeneratedFilesPanel, { type GeneratedFileRow } from "@/components/GeneratedFilesPanel";
 
 export default function App() {
   // Input states
