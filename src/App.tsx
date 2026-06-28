@@ -45,6 +45,50 @@ export default function App() {
   const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const currentPlaySessionRef = useRef<number | null>(null);
 
+  // Voice preview state
+  const [previewingVoice, setPreviewingVoice] = useState<string | null>(null);
+  const previewAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  const PREVIEW_SENTENCE = "هلا والله، أنا صوتك في هذي الحلقة، جربني وشوف وش رايك.";
+
+  const previewVoice = async (voice: string, role: "host" | "collector") => {
+    try {
+      // Stop any ongoing preview
+      if (previewAudioRef.current) {
+        previewAudioRef.current.pause();
+        previewAudioRef.current = null;
+      }
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+
+      if (voiceEngine === "browser") {
+        setPreviewingVoice(voice);
+        speakLocalText(PREVIEW_SENTENCE, voice, role, () => {}, () => setPreviewingVoice(null));
+        return;
+      }
+
+      setPreviewingVoice(voice);
+      const res = await fetch("/api/generate-tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: PREVIEW_SENTENCE, voice, role }),
+      });
+      if (!res.ok) throw new Error("preview failed");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      previewAudioRef.current = audio;
+      audio.onended = () => {
+        setPreviewingVoice(null);
+        URL.revokeObjectURL(url);
+      };
+      audio.onerror = () => setPreviewingVoice(null);
+      await audio.play();
+    } catch {
+      setPreviewingVoice(null);
+      setError("تعذرت معاينة الصوت، حاول مرة أخرى.");
+    }
+  };
+
   // Cancel any speech synthesis on unmount
   useEffect(() => {
     return () => {
