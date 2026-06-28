@@ -871,7 +871,8 @@ export default function App() {
 
         {/* Conditional Layouts based on Preset Mode */}
         {activePreset === "full_episode" ? (
-          <div className="w-full bg-slate-900/40 border border-slate-800 rounded-2xl p-6 flex flex-col shadow-lg relative min-h-[500px]" id="full-episode-view">
+          <div className="w-full bg-slate-900/40 border border-slate-800 rounded-2xl p-3 sm:p-6 flex flex-col shadow-lg relative min-h-[400px] sm:min-h-[500px]" id="full-episode-view">
+
             {/* Full Episode Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800/80">
               <div className="flex items-center gap-3">
