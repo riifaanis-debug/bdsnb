@@ -785,53 +785,53 @@ export default function App() {
       <main className="flex-grow max-w-7xl w-full mx-auto px-3 sm:px-4 md:px-10 py-4 sm:py-6 md:py-8 pb-48 sm:pb-32 flex flex-col gap-4 sm:gap-6">
         
         {/* Banner with brief info and Script presets selection */}
-        <div className="bg-gradient-to-r from-indigo-950/40 to-slate-900/60 border border-slate-800 rounded-2xl p-6 relative overflow-hidden shadow-2xl">
+        <div className="bg-gradient-to-r from-indigo-950/40 to-slate-900/60 border border-slate-800 rounded-2xl p-4 sm:p-6 relative overflow-hidden shadow-2xl">
           <div className="absolute top-0 left-0 p-8 opacity-5">
             <Mic className="w-40 h-40" />
           </div>
           <div className="relative z-10">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-              <div className="flex items-center gap-2 text-indigo-400 text-sm font-bold">
-                <Sparkles className="w-4 h-4 animate-bounce" />
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3 sm:mb-4">
+              <div className="flex items-center gap-2 text-indigo-400 text-xs sm:text-sm font-bold">
+                <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-bounce" />
                 <span>أهلاً بك في منصة البودكاست المبتكرة</span>
               </div>
-              
+
               {/* Notice badge if automatic fallback happened */}
               {quotaExceededNotice && (
-                <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs px-3 py-1 rounded-lg flex items-center gap-1.5">
-                  <Info className="w-3.5 h-3.5 animate-pulse" />
+                <div className="bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] sm:text-xs px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+                  <Info className="w-3 h-3 sm:w-3.5 sm:h-3.5 animate-pulse shrink-0" />
                   <span>تم تفعيل الوضع المحلي لضمان استمرارية التشغيل</span>
                 </div>
               )}
             </div>
 
-            <h2 className="text-xl md:text-2xl font-bold text-slate-100 mb-2">
+            <h2 className="text-base sm:text-xl md:text-2xl font-bold text-slate-100 mb-1.5 sm:mb-2">
               حوار تفاعلي طبيعي بلهجة سعودية بسيطة!
             </h2>
-            <p className="text-slate-400 text-xs md:text-sm max-w-3xl leading-relaxed mb-6">
+            <p className="text-slate-400 text-[11px] sm:text-xs md:text-sm max-w-3xl leading-relaxed mb-4 sm:mb-6">
               اكتب النص لكل شخصية، واختر نبرة الصوت المفضلة، وسيقوم النظام بتوليد الكلام بلهجة عامية دقيقة ومخارج حروف واضحة. حدد أحد السيناريوهات الجاهزة بالأسفل لتجربتها مباشرة!
             </p>
 
             {/* Quick Presets Selector */}
             <div>
-              <div className="text-xs font-bold text-slate-400 mb-3 block">اختر سيناريو وحوار جاهز للتجربة السريعة:</div>
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+              <div className="text-[11px] sm:text-xs font-bold text-slate-400 mb-2 sm:mb-3 block">اختر سيناريو وحوار جاهز للتجربة السريعة:</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
                 {SAMPLE_SCRIPTS.map((script) => (
                   <button
                     key={script.id}
                     id={`preset-btn-${script.id}`}
                     onClick={() => handleApplyPreset(script)}
-                    className={`text-right p-3 rounded-xl border transition-all duration-200 cursor-pointer ${
+                    className={`text-right p-2.5 sm:p-3 rounded-xl border transition-all duration-200 cursor-pointer ${
                       activePreset === script.id
                         ? "bg-indigo-600/20 border-indigo-500 shadow-lg shadow-indigo-500/5 text-slate-100"
                         : "bg-slate-900/40 border-slate-800/80 hover:bg-slate-800/50 hover:border-slate-700 text-slate-300"
                     }`}
                   >
-                    <div className="font-bold text-sm mb-1 flex items-center justify-between">
+                    <div className="font-bold text-xs sm:text-sm mb-1 flex items-center justify-between gap-2">
                       <span className="truncate">{script.title}</span>
-                      {activePreset === script.id && <span className="text-[10px] bg-indigo-500 text-white px-1.5 py-0.5 rounded-md flex-shrink-0">محدد</span>}
+                      {activePreset === script.id && <span className="text-[9px] sm:text-[10px] bg-indigo-500 text-white px-1.5 py-0.5 rounded-md shrink-0">محدد</span>}
                     </div>
-                    <p className="text-xs text-slate-400 line-clamp-1">{script.description}</p>
+                    <p className="text-[10px] sm:text-xs text-slate-400 line-clamp-1">{script.description}</p>
                   </button>
                 ))}
               </div>
@@ -841,7 +841,8 @@ export default function App() {
 
         {/* Global Error/Warning Banner if any */}
         {error && (
-          <div className="bg-amber-500/10 border border-amber-500/30 text-amber-300 px-4 py-3 rounded-xl flex items-start gap-3 text-sm animate-fade-in" id="error-banner">
+          <div className="bg-amber-500/10 border border-amber-500/30 text-amber-300 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl flex items-start gap-2 sm:gap-3 text-xs sm:text-sm animate-fade-in" id="error-banner">
+
             <AlertCircle className="w-5 h-5 flex-shrink-0 text-amber-400 mt-0.5" />
             <div className="flex-1 leading-relaxed">{error}</div>
             <button onClick={() => setError(null)} className="text-xs hover:underline text-amber-400 font-bold cursor-pointer self-center">إغلاق</button>
