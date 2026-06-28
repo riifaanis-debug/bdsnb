@@ -874,29 +874,29 @@ export default function App() {
           <div className="w-full bg-slate-900/40 border border-slate-800 rounded-2xl p-3 sm:p-6 flex flex-col shadow-lg relative min-h-[400px] sm:min-h-[500px]" id="full-episode-view">
 
             {/* Full Episode Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800/80">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-indigo-500/10 flex items-center justify-center border border-indigo-500/30">
-                  <Mic className="w-6 h-6 text-indigo-400" />
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-slate-800/80">
+              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                <div className="w-9 h-9 sm:w-12 sm:h-12 shrink-0 rounded-full bg-indigo-500/10 flex items-center justify-center border border-indigo-500/30">
+                  <Mic className="w-4 h-4 sm:w-6 sm:h-6 text-indigo-400" />
                 </div>
-                <div>
-                  <h2 className="font-bold text-slate-100 text-lg">النص الحواري الكامل للحلقة المعتمدة</h2>
-                  <p className="text-xs text-indigo-400 font-bold uppercase tracking-wider">
-                    المذيع: نبرة شارون (Charon) • المحصل: نبرة فينرير (Fenrir)
+                <div className="min-w-0">
+                  <h2 className="font-bold text-slate-100 text-sm sm:text-lg truncate">النص الحواري الكامل للحلقة المعتمدة</h2>
+                  <p className="text-[10px] sm:text-xs text-indigo-400 font-bold uppercase tracking-wider truncate">
+                    المذيع: Charon • المحصل: Fenrir
                   </p>
                 </div>
               </div>
-              
+
               {/* Informational locked voices badge */}
-              <div className="bg-indigo-500/10 border border-indigo-500/20 px-3 py-1.5 rounded-xl text-xs text-indigo-300 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-indigo-400" />
+              <div className="bg-indigo-500/10 border border-indigo-500/20 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl text-[10px] sm:text-xs text-indigo-300 flex items-center gap-1.5 sm:gap-2 self-start sm:self-auto">
+                <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-400 shrink-0" />
                 <span className="font-bold">توليد متصل بملف واحد (Gemini)</span>
               </div>
             </div>
 
             {/* Elegant notice about the constraints */}
-            <div className="bg-indigo-950/40 border border-indigo-900/40 rounded-xl p-4 mb-6 text-xs text-slate-300 leading-relaxed flex items-start gap-3">
-              <Info className="w-5 h-5 text-indigo-400 flex-shrink-0 mt-0.5" />
+            <div className="bg-indigo-950/40 border border-indigo-900/40 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 text-[11px] sm:text-xs text-slate-300 leading-relaxed flex items-start gap-2 sm:gap-3">
+              <Info className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-400 flex-shrink-0 mt-0.5" />
               <div>
                 <span className="font-bold block text-slate-100 mb-1">⚠️ شروط الإنتاج الصوتي الإلزامية:</span>
                 تلتزم المنصة بتوليد كامل نص الحوار المعتمد حرفياً ١٠٠٪ دفعة واحدة بملف صوتي واحد دون تعديل لضمان الأداء السلس باللهجة السعودية العامية البسيطة. تم قفل محرك الصوت على خيار السحابي لخدمة <strong className="text-white">Gemini AI</strong> التزاماً بالشروط.
@@ -904,23 +904,23 @@ export default function App() {
             </div>
 
             {/* Edit/Preview Toggle */}
-            <div className="flex items-center justify-between gap-2 mb-3">
-              <div className="flex items-center gap-2 text-xs text-slate-400">
-                <Info className="w-4 h-4 text-indigo-400" />
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+              <div className="flex items-start gap-2 text-[11px] sm:text-xs text-slate-400 min-w-0">
+                <Info className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-400 shrink-0 mt-0.5" />
                 <span>يمكنك تعديل النص أو إضافة فقرات جديدة. ابدأ كل فقرة بـ <strong className="text-indigo-300">المذيع:</strong> أو <strong className="text-amber-300">المحصّل:</strong> وافصل بين الفقرات بسطر فارغ.</span>
               </div>
               <div className="flex gap-2 flex-shrink-0">
                 <button
                   type="button"
                   onClick={() => setIsEditingScript((v) => !v)}
-                  className="px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition-all cursor-pointer"
+                  className="flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition-all cursor-pointer"
                 >
                   {isEditingScript ? "معاينة" : "تعديل النص"}
                 </button>
                 <button
                   type="button"
                   onClick={() => setFullScriptText(SAMPLE_SCRIPTS.find(s => s.id === "full_episode")?.fullScript || "")}
-                  className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 transition-all cursor-pointer"
+                  className="flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 transition-all cursor-pointer"
                   title="إعادة تعيين النص الأصلي"
                 >
                   استعادة
@@ -934,45 +934,45 @@ export default function App() {
                 value={fullScriptText}
                 onChange={(e) => setFullScriptText(e.target.value)}
                 dir="rtl"
-                className="w-full bg-slate-950/60 rounded-xl border border-indigo-800/60 focus:border-indigo-500 outline-none p-6 h-[480px] text-slate-100 leading-relaxed text-sm font-sans resize-none"
+                className="w-full bg-slate-950/60 rounded-xl border border-indigo-800/60 focus:border-indigo-500 outline-none p-3 sm:p-6 h-[320px] sm:h-[480px] text-slate-100 leading-relaxed text-xs sm:text-sm font-sans resize-none"
                 placeholder="اكتب الحوار هنا..."
               />
             ) : (
-              <div className="bg-slate-950/60 rounded-xl border border-slate-800/80 p-6 max-h-[480px] overflow-y-auto flex flex-col gap-4 font-sans text-sm">
+              <div className="bg-slate-950/60 rounded-xl border border-slate-800/80 p-3 sm:p-6 max-h-[360px] sm:max-h-[480px] overflow-y-auto flex flex-col gap-3 sm:gap-4 font-sans text-sm">
                 {fullScriptText.split("\n\n").map((paragraph, index) => {
                   const isHost = paragraph.startsWith("المذيع:");
                   const isCollector = paragraph.startsWith("المحصّل:") || paragraph.startsWith("المحصل:");
                   const textContent = paragraph.replace(/^(المذيع:|المحصّل:|المحصل:)\s*/, "").trim();
-                  
+
                   if (!textContent) return null;
 
                   return (
-                    <div 
-                      key={index} 
-                      className={`flex flex-col gap-1.5 p-3.5 rounded-xl border transition-all ${
-                        isHost 
-                          ? "bg-indigo-950/10 border-indigo-950/30 ml-8 text-right" 
-                          : isCollector 
-                          ? "bg-amber-950/5 border-amber-950/10 mr-8 text-right"
-                          : "bg-slate-900/10 border-slate-800/40 mx-4"
+                    <div
+                      key={index}
+                      className={`flex flex-col gap-1.5 p-2.5 sm:p-3.5 rounded-xl border transition-all break-words ${
+                        isHost
+                          ? "bg-indigo-950/10 border-indigo-950/30 sm:ml-8 text-right"
+                          : isCollector
+                          ? "bg-amber-950/5 border-amber-950/10 sm:mr-8 text-right"
+                          : "bg-slate-900/10 border-slate-800/40 sm:mx-4"
                       }`}
                     >
-                      <div className="flex items-center gap-2 mb-1">
+                      <div className="flex items-center flex-wrap gap-1.5 sm:gap-2 mb-1">
                         {isHost ? (
                           <>
-                            <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-indigo-600 text-white">المذيع</span>
-                            <span className="text-[10px] text-indigo-400 font-bold">بصوت Charon (رجالي سعودي عامي)</span>
+                            <span className="px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-black bg-indigo-600 text-white">المذيع</span>
+                            <span className="text-[9px] sm:text-[10px] text-indigo-400 font-bold">بصوت Charon</span>
                           </>
                         ) : isCollector ? (
                           <>
-                            <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-amber-600 text-slate-950">المحصل</span>
-                            <span className="text-[10px] text-amber-400 font-bold">بصوت Fenrir (رجالي سعودي عامي)</span>
+                            <span className="px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-black bg-amber-600 text-slate-950">المحصل</span>
+                            <span className="text-[9px] sm:text-[10px] text-amber-400 font-bold">بصوت Fenrir</span>
                           </>
                         ) : (
-                          <span className="text-[10px] text-slate-400 font-bold">راوي</span>
+                          <span className="text-[9px] sm:text-[10px] text-slate-400 font-bold">راوي</span>
                         )}
                       </div>
-                      <p className="text-slate-200 leading-relaxed text-xs md:text-sm">{textContent}</p>
+                      <p className="text-slate-200 leading-relaxed text-[12px] sm:text-sm">{textContent}</p>
                     </div>
                   );
                 })}
@@ -981,30 +981,31 @@ export default function App() {
 
 
             {/* Large generate button for the full episode */}
-            <div className="mt-6">
+            <div className="mt-4 sm:mt-6">
               {voiceEngine === "browser" ? (
                 <button
                   id="btn-play-full-episode"
                   disabled={isLoading}
                   onClick={generateCompleteDialogue}
-                  className="w-full py-4 bg-gradient-to-l from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 disabled:opacity-50 text-white rounded-xl font-bold flex items-center justify-center gap-3 transition-all shadow-xl shadow-amber-600/20 active:scale-[0.99] cursor-pointer text-base md:text-lg"
+                  className="w-full py-3 sm:py-4 px-3 bg-gradient-to-l from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 disabled:opacity-50 text-white rounded-xl font-bold flex items-center justify-center gap-2 sm:gap-3 transition-all shadow-xl shadow-amber-600/20 active:scale-[0.99] cursor-pointer text-xs sm:text-base md:text-lg text-center"
                 >
-                  <Activity className="w-5 h-5 animate-pulse text-amber-100" />
-                  تشغيل الحلقة الكاملة عبر محاكاة المتصفح (مجاناً وبلا حدود)
+                  <Activity className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse text-amber-100 shrink-0" />
+                  <span>تشغيل الحلقة الكاملة عبر محاكاة المتصفح</span>
                 </button>
               ) : (
                 <button
                   id="btn-play-full-episode"
                   disabled={isLoading}
                   onClick={generateCompleteDialogue}
-                  className="w-full py-4 bg-gradient-to-l from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 disabled:opacity-50 text-white rounded-xl font-bold flex items-center justify-center gap-3 transition-all shadow-xl shadow-indigo-600/20 active:scale-[0.99] cursor-pointer text-base md:text-lg"
+                  className="w-full py-3 sm:py-4 px-3 bg-gradient-to-l from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 disabled:opacity-50 text-white rounded-xl font-bold flex items-center justify-center gap-2 sm:gap-3 transition-all shadow-xl shadow-indigo-600/20 active:scale-[0.99] cursor-pointer text-xs sm:text-base md:text-lg text-center"
                 >
-                  <Sparkles className="w-5 h-5 animate-pulse" />
-                  إنتاج الحلقة الكاملة بملف صوتي واحد (صوت Gemini)
+                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse shrink-0" />
+                  <span>إنتاج الحلقة الكاملة بملف صوتي واحد (Gemini)</span>
                 </button>
               )}
             </div>
           </div>
+
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             
