@@ -1007,32 +1007,32 @@ export default function App() {
           </div>
 
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8">
+
             {/* Section 1: The Host (المذيع) */}
             <section className="flex flex-col gap-4" id="section-host">
-              <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 flex flex-col h-full shadow-lg relative">
-                
+              <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-3 sm:p-6 flex flex-col h-full shadow-lg relative">
+
                 {/* Header inside host card */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-800/80">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-indigo-500/10 flex items-center justify-center border border-indigo-500/30">
-                      <Mic className="w-6 h-6 text-indigo-400" />
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-3 sm:mb-4 pb-3 sm:pb-4 border-b border-slate-800/80">
+                  <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                    <div className="w-9 h-9 sm:w-12 sm:h-12 shrink-0 rounded-full bg-indigo-500/10 flex items-center justify-center border border-indigo-500/30">
+                      <Mic className="w-4 h-4 sm:w-6 sm:h-6 text-indigo-400" />
                     </div>
-                    <div>
-                      <h2 className="font-bold text-slate-100 text-lg">نص المذيع</h2>
-                      <p className="text-xs text-indigo-400 font-bold uppercase tracking-wider">صوت هادئ ومحترف • مقدم الحلقات</p>
+                    <div className="min-w-0">
+                      <h2 className="font-bold text-slate-100 text-sm sm:text-lg">نص المذيع</h2>
+                      <p className="text-[10px] sm:text-xs text-indigo-400 font-bold uppercase tracking-wider truncate">صوت هادئ ومحترف • مقدم الحلقات</p>
                     </div>
                   </div>
-                  
+
                   {/* Voice Selection */}
-                  <div className="flex flex-col">
+                  <div className="flex flex-col w-full sm:w-auto">
                     <label className="text-[10px] text-slate-400 mb-1 font-bold">نبرة صوت المذيع:</label>
                     <select
                       id="host-voice-select"
                       value={hostVoice}
                       onChange={(e) => setHostVoice(e.target.value)}
-                      className="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 cursor-pointer"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs text-slate-200 focus:outline-none focus:border-indigo-500 cursor-pointer"
                     >
                       {VOICE_OPTIONS.map((v) => (
                         <option key={v.value} value={v.value}>
@@ -1044,33 +1044,33 @@ export default function App() {
                 </div>
 
                 {/* Informative description */}
-                <p className="text-xs text-slate-400 mb-3 leading-relaxed">
+                <p className="text-[11px] sm:text-xs text-slate-400 mb-2 sm:mb-3 leading-relaxed">
                   {VOICE_OPTIONS.find(v => v.value === hostVoice)?.description}
                 </p>
-                
+
                 {/* Text Input area */}
                 <div className="flex-grow flex flex-col">
                   <textarea
                     id="host-textarea"
                     value={hostText}
                     onChange={(e) => setHostText(e.target.value)}
-                    className="flex-grow w-full bg-slate-950/50 border border-slate-800/80 rounded-xl p-4 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500/50 resize-none transition-colors min-h-[160px] text-sm leading-relaxed"
+                    className="flex-grow w-full bg-slate-950/50 border border-slate-800/80 rounded-xl p-3 sm:p-4 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500/50 resize-none transition-colors min-h-[140px] sm:min-h-[160px] text-[13px] sm:text-sm leading-relaxed"
                     placeholder="اكتب هنا النص الذي تريد أن يقوله المذيع بلهجة سعودية..."
                   ></textarea>
-                  <div className="flex justify-between text-[11px] text-slate-500 mt-2">
-                    <span>علامات الترقيم تضيف وقفات طبيعية كالبودكاست</span>
-                    <span>{hostText.length} حرفاً</span>
+                  <div className="flex justify-between text-[10px] sm:text-[11px] text-slate-500 mt-2 gap-2">
+                    <span className="truncate">علامات الترقيم تضيف وقفات طبيعية</span>
+                    <span className="shrink-0">{hostText.length} حرفاً</span>
                   </div>
                 </div>
-                
+
                 {/* Trigger single button */}
                 <button
                   id="btn-play-host"
                   disabled={isLoading}
                   onClick={() => generateSingleSpeaker("host")}
-                  className="mt-4 w-full py-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-600/10 active:scale-[0.98] cursor-pointer"
+                  className="mt-3 sm:mt-4 w-full py-2.5 sm:py-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-600/10 active:scale-[0.98] cursor-pointer text-xs sm:text-sm"
                 >
-                  <Volume2 className="w-5 h-5" />
+                  <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />
                   تشغيل صوت المذيع {voiceEngine === "browser" && "(محلياً)"}
                 </button>
               </div>
@@ -1078,28 +1078,28 @@ export default function App() {
 
             {/* Section 2: The Collector (المحصل) */}
             <section className="flex flex-col gap-4" id="section-collector">
-              <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 flex flex-col h-full shadow-lg relative">
-                
+              <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-3 sm:p-6 flex flex-col h-full shadow-lg relative">
+
                 {/* Header inside collector card */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-800/80">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center border border-amber-500/30">
-                      <User className="w-6 h-6 text-amber-400" />
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-3 sm:mb-4 pb-3 sm:pb-4 border-b border-slate-800/80">
+                  <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                    <div className="w-9 h-9 sm:w-12 sm:h-12 shrink-0 rounded-full bg-amber-500/10 flex items-center justify-center border border-amber-500/30">
+                      <User className="w-4 h-4 sm:w-6 sm:h-6 text-amber-400" />
                     </div>
-                    <div>
-                      <h2 className="font-bold text-slate-100 text-lg">نص المحصل</h2>
-                      <p className="text-xs text-amber-400 font-bold uppercase tracking-wider">صوت واقعي ومباشر • خبير وممارس القطاع</p>
+                    <div className="min-w-0">
+                      <h2 className="font-bold text-slate-100 text-sm sm:text-lg">نص المحصل</h2>
+                      <p className="text-[10px] sm:text-xs text-amber-400 font-bold uppercase tracking-wider truncate">صوت واقعي ومباشر • خبير القطاع</p>
                     </div>
                   </div>
-                  
+
                   {/* Voice Selection */}
-                  <div className="flex flex-col">
+                  <div className="flex flex-col w-full sm:w-auto">
                     <label className="text-[10px] text-slate-400 mb-1 font-bold">نبرة صوت المحصل:</label>
                     <select
                       id="collector-voice-select"
                       value={collectorVoice}
                       onChange={(e) => setCollectorVoice(e.target.value)}
-                      className="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500 cursor-pointer"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs text-slate-200 focus:outline-none focus:border-amber-500 cursor-pointer"
                     >
                       {VOICE_OPTIONS.map((v) => (
                         <option key={v.value} value={v.value}>
@@ -1111,33 +1111,33 @@ export default function App() {
                 </div>
 
                 {/* Informative description */}
-                <p className="text-xs text-slate-400 mb-3 leading-relaxed">
+                <p className="text-[11px] sm:text-xs text-slate-400 mb-2 sm:mb-3 leading-relaxed">
                   {VOICE_OPTIONS.find(v => v.value === collectorVoice)?.description}
                 </p>
-                
+
                 {/* Text Input area */}
                 <div className="flex-grow flex flex-col">
                   <textarea
                     id="collector-textarea"
                     value={collectorText}
                     onChange={(e) => setCollectorText(e.target.value)}
-                    className="flex-grow w-full bg-slate-950/50 border border-slate-800/80 rounded-xl p-4 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-amber-500/50 resize-none transition-colors min-h-[160px] text-sm leading-relaxed"
+                    className="flex-grow w-full bg-slate-950/50 border border-slate-800/80 rounded-xl p-3 sm:p-4 text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-amber-500/50 resize-none transition-colors min-h-[140px] sm:min-h-[160px] text-[13px] sm:text-sm leading-relaxed"
                     placeholder="اكتب هنا النص الذي تريد أن يقوله المحصل بأسلوب سعودي بسيط..."
                   ></textarea>
-                  <div className="flex justify-between text-[11px] text-slate-500 mt-2">
-                    <span>يقال بلهجة شعبية تقريبية للشارع السعودي</span>
-                    <span>{collectorText.length} حرفاً</span>
+                  <div className="flex justify-between text-[10px] sm:text-[11px] text-slate-500 mt-2 gap-2">
+                    <span className="truncate">لهجة شعبية تقريبية للشارع السعودي</span>
+                    <span className="shrink-0">{collectorText.length} حرفاً</span>
                   </div>
                 </div>
-                
+
                 {/* Trigger single button */}
                 <button
                   id="btn-play-collector"
                   disabled={isLoading}
                   onClick={() => generateSingleSpeaker("collector")}
-                  className="mt-4 w-full py-3 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-amber-600/10 active:scale-[0.98] cursor-pointer"
+                  className="mt-3 sm:mt-4 w-full py-2.5 sm:py-3 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-amber-600/10 active:scale-[0.98] cursor-pointer text-xs sm:text-sm"
                 >
-                  <Volume2 className="w-5 h-5" />
+                  <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />
                   تشغيل صوت المحصل {voiceEngine === "browser" && "(محلياً)"}
                 </button>
               </div>
@@ -1145,6 +1145,7 @@ export default function App() {
 
           </div>
         )}
+
 
         {/* Quick Help Guide */}
         <div className="bg-slate-900/20 border border-slate-800/50 rounded-xl p-4 flex gap-3 text-xs text-slate-400 items-start leading-relaxed">
