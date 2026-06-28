@@ -751,7 +751,23 @@ export default function App() {
             <span>صوت المتصفح البديل (مجاني ومفتوح)</span>
           </button>
         </div>
+
+        <button
+          onClick={() => setLibraryOpen(true)}
+          className="mr-3 px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 bg-gradient-to-l from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white shadow-lg shadow-indigo-600/20 cursor-pointer transition-all"
+          title="عرض الملفات المولّدة المحفوظة"
+        >
+          <Database className="w-4 h-4" />
+          <span>الملفات المولّدة</span>
+        </button>
       </header>
+
+      <GeneratedFilesPanel
+        open={libraryOpen}
+        onClose={() => setLibraryOpen(false)}
+        onLoad={handleLoadFromLibrary}
+        refreshTick={libraryRefresh}
+      />
 
       {/* Main Container */}
       <main className="flex-grow max-w-7xl w-full mx-auto px-4 md:px-10 py-6 md:py-8 flex flex-col gap-6">
