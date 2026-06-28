@@ -782,7 +782,7 @@ export default function App() {
       />
 
       {/* Main Container */}
-      <main className="flex-grow max-w-7xl w-full mx-auto px-4 md:px-10 py-6 md:py-8 flex flex-col gap-6">
+      <main className="flex-grow max-w-7xl w-full mx-auto px-3 sm:px-4 md:px-10 py-4 sm:py-6 md:py-8 pb-48 sm:pb-32 flex flex-col gap-4 sm:gap-6">
         
         {/* Banner with brief info and Script presets selection */}
         <div className="bg-gradient-to-r from-indigo-950/40 to-slate-900/60 border border-slate-800 rounded-2xl p-6 relative overflow-hidden shadow-2xl">
