@@ -30,6 +30,10 @@ export default function App() {
   const [voiceEngine, setVoiceEngine] = useState<"cloud" | "browser">("cloud");
   const [quotaExceededNotice, setQuotaExceededNotice] = useState(false);
 
+  // Library panel
+  const [libraryOpen, setLibraryOpen] = useState(false);
+  const [libraryRefresh, setLibraryRefresh] = useState(0);
+
   // HTML5 Audio tracking
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
