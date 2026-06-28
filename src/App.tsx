@@ -1181,18 +1181,29 @@ export default function App() {
                   {/* Voice Selection */}
                   <div className="flex flex-col w-full sm:w-auto">
                     <label className="text-[10px] text-slate-400 mb-1 font-bold">نبرة صوت المحصل:</label>
-                    <select
-                      id="collector-voice-select"
-                      value={collectorVoice}
-                      onChange={(e) => setCollectorVoice(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs text-slate-200 focus:outline-none focus:border-amber-500 cursor-pointer"
-                    >
-                      {VOICE_OPTIONS.map((v) => (
-                        <option key={v.value} value={v.value}>
-                          {v.label} ({v.gender === "male" ? "رجالي" : "نسائي"})
-                        </option>
-                      ))}
-                    </select>
+                    <div className="flex gap-1.5">
+                      <select
+                        id="collector-voice-select"
+                        value={collectorVoice}
+                        onChange={(e) => setCollectorVoice(e.target.value)}
+                        className="flex-1 min-w-0 bg-slate-950 border border-slate-800 rounded-lg px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs text-slate-200 focus:outline-none focus:border-amber-500 cursor-pointer"
+                      >
+                        {VOICE_OPTIONS.map((v) => (
+                          <option key={v.value} value={v.value}>
+                            {v.label} ({v.gender === "male" ? "رجالي" : "نسائي"})
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        onClick={() => previewVoice(collectorVoice, "collector")}
+                        disabled={previewingVoice === collectorVoice}
+                        title="معاينة الصوت"
+                        className="shrink-0 px-2 py-1.5 bg-amber-600/20 hover:bg-amber-600/40 border border-amber-500/40 rounded-lg text-amber-200 disabled:opacity-60 cursor-pointer"
+                      >
+                        {previewingVoice === collectorVoice ? <Activity className="w-3.5 h-3.5 animate-pulse" /> : <Play className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
                   </div>
                 </div>
 
