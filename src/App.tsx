@@ -262,6 +262,75 @@ export default function App() {
     setError("⚠️ تم تفعيل نظام محاكاة الصوت المدمج في جهازك تلقائياً لتجاوز حد حصة الـ API لخدمة Gemini. يمكنك الاستماع للحوار كاملاً ومتابعة التجربة مجاناً وبلا حدود!");
   };
 
+  // Auto-save generated file to Lovable Cloud
+  const autoSaveGeneratedFile = async (params: {
+    name: string;
+    kind: "single-host" | "single-collector" | "dialogue" | "full-episode";
+    engine: "cloud" | "browser";
+    audioBlob?: Blob | null;
+    hostText?: string;
+    collectorText?: string;
+    fullScript?: string;
+    hostVoice?: string;
+    collectorVoice?: string;
+    presetId?: string;
+  }) => {
+    try {
+      let audio_path: string | null = null;
+      if (params.audioBlob) {
+        const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.mp3`;
+        const { error: upErr } = await supabase.storage
+          .from("generated-audio")
+          .upload(path, params.audioBlob, { contentType: "audio/mpeg", upsert: false });
+        if (!upErr) audio_path = path;
+        else console.warn("Audio upload failed:", upErr.message);
+      }
+      const { error: insErr } = await supabase.from("generated_files").insert({
+        name: params.name,
+        kind: params.kind,
+        engine: params.engine,
+        preset_id: params.presetId || activePreset,
+        host_text: params.hostText ?? null,
+        collector_text: params.collectorText ?? null,
+        full_script: params.fullScript ?? null,
+        host_voice: params.hostVoice ?? null,
+        collector_voice: params.collectorVoice ?? null,
+        audio_path,
+      });
+      if (insErr) console.warn("DB insert failed:", insErr.message);
+      else setLibraryRefresh((t) => t + 1);
+    } catch (e) {
+      console.warn("autoSaveGeneratedFile failed", e);
+    }
+  };
+
+  // Handler when a file is loaded from the library
+  const handleLoadFromLibrary = (f: GeneratedFileRow, signedUrl: string | null) => {
+    if (f.preset_id) setActivePreset(f.preset_id);
+    if (f.host_voice) setHostVoice(f.host_voice);
+    if (f.collector_voice) setCollectorVoice(f.collector_voice);
+    if (f.host_text != null) setHostText(f.host_text);
+    if (f.collector_text != null) setCollectorText(f.collector_text);
+    if (f.full_script != null) setFullScriptText(f.full_script);
+    setVoiceEngine((f.engine as "cloud" | "browser") || "cloud");
+    stopLocalSpeaking();
+    if (signedUrl) {
+      setAudioUrl(signedUrl);
+      setAudioName(f.name.endsWith(".mp3") ? f.name : `${f.name}.mp3`);
+      setIsPlaying(false);
+      setTimeout(() => {
+        if (audioRef.current) {
+          audioRef.current.load();
+          audioRef.current.play().catch(() => {});
+          setIsPlaying(true);
+        }
+      }, 150);
+    } else {
+      setAudioUrl(null);
+    }
+    setError(null);
+  };
+
   // Helper to parse the full Arabic script into structured turn-by-turn speaker dialogues
   const parseFullScript = (fullScript: string) => {
     const normalizedScript = fullScript
