@@ -54,7 +54,7 @@ ${roleLine}
 انطق النص التالي مباشرة دون أي إضافات:`;
 
           const response = await client.models.generateContent({
-            model: "gemini-3.1-flash-tts-preview",
+            model: "gemini-2.5-flash-preview-tts",
             contents: [{ parts: [{ text: `${promptPrefix}\n\n${text}` }] }],
             config: {
               responseModalities: ["AUDIO"],
