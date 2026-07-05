@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { GoogleGenAI } from "@google/genai";
 
 function encodeWav(pcm: Buffer, sampleRate = 24000): Buffer {
   const buffer = Buffer.alloc(44 + pcm.length);
@@ -20,13 +19,74 @@ function encodeWav(pcm: Buffer, sampleRate = 24000): Buffer {
   return buffer;
 }
 
-async function generateChunk(
-  client: GoogleGenAI,
-  text: string,
-  hostVoice: string,
-  collectorVoice: string,
-): Promise<Buffer> {
-  const prompt = `🚨 تعليمات إلزامية غير قابلة للتجاوز - أي مخالفة = فشل كامل وإعادة التوليد.
+type SpeakerRole = "host" | "collector";
+type DialogueTurn = { role: SpeakerRole; text: string };
+type OpenAiVoice =
+  | "alloy"
+  | "ash"
+  | "ballad"
+  | "coral"
+  | "echo"
+  | "fable"
+  | "nova"
+  | "onyx"
+  | "sage"
+  | "shimmer"
+  | "verse";
+
+const VOICE_MAP: Record<string, OpenAiVoice> = {
+  Charon: "onyx",
+  Fenrir: "ash",
+  Kore: "echo",
+  Zephyr: "alloy",
+  Orus: "onyx",
+  Enceladus: "fable",
+  Iapetus: "echo",
+  Umbriel: "sage",
+  Algieba: "verse",
+  Algenib: "onyx",
+  Rasalgethi: "ash",
+  Achernar: "alloy",
+  Alnilam: "echo",
+  Schedar: "sage",
+  Gacrux: "onyx",
+  Achird: "verse",
+  Zubenelgenubi: "alloy",
+  Sadachbia: "fable",
+  Sadaltager: "ash",
+  Puck: "nova",
+  Leda: "shimmer",
+  Aoede: "coral",
+  Callirrhoe: "sage",
+  Autonoe: "verse",
+  Despina: "shimmer",
+  Erinome: "coral",
+  Laomedeia: "nova",
+  Pulcherrima: "coral",
+  Vindemiatrix: "sage",
+  Sulafat: "shimmer",
+};
+
+function mapVoice(voice?: string): OpenAiVoice {
+  return (voice && VOICE_MAP[voice]) || "alloy";
+}
+
+function extractGatewayMessage(raw: string) {
+  try {
+    const parsed = JSON.parse(raw);
+    return parsed?.error?.message || parsed?.message || raw;
+  } catch {
+    return raw;
+  }
+}
+
+function getInstructions(role: SpeakerRole) {
+  const roleLine =
+    role === "host"
+      ? "أنت المذيع فقط. تحدث كمذيع بودكاست سعودي عفوي ومثقف، بصوت واثق وترحيبي."
+      : "أنت المحصل فقط. تحدث كمحصل سعودي واقعي وعملي، بصوت مباشر وهادئ وقريب من الناس.";
+
+  return `🚨 تعليمات إلزامية غير قابلة للتجاوز - أي مخالفة = فشل كامل وإعادة التوليد.
 
 أولاً - اللهجة (إلزامي 100%):
 - يُمنع منعاً باتاً استخدام اللغة العربية الفصحى في أي جزء من الحوار، ولا حتى في كلمة واحدة.
@@ -55,30 +115,130 @@ async function generateChunk(
 سابعاً - شرط إلزامي:
 - إذا ظهرت أي كلمة فصيحة أو خرج الأداء عن اللهجة السعودية العامية البسيطة فاعتبر التوليد فاشلاً وأعد التوليد كاملاً حتى يصبح 100% باللهجة السعودية العامية دون أي استثناء.
 
-الآن نفّذ الحوار التالي بصوت كل متحدث بدقة تامة:
+${roleLine}
+انطق النص التالي مباشرة دون أي مقدمات أو أسماء متحدثين:`;
+}
 
-${text}`;
+async function synthesizeSpeechPcm(params: {
+  text: string;
+  voice?: string;
+  role: SpeakerRole;
+}): Promise<Buffer> {
+  const key = process.env.LOVABLE_API_KEY;
+  if (!key) {
+    const error = new Error("مفتاح Lovable AI غير مهيأ في المشروع.") as Error & { status?: number };
+    error.status = 500;
+    throw error;
+  }
 
-  const response = await client.models.generateContent({
-    model: "gemini-2.5-flash-preview-tts",
-    contents: [{ parts: [{ text: prompt }] }],
-    config: {
-      responseModalities: ["AUDIO"],
-      speechConfig: {
-        multiSpeakerVoiceConfig: {
-          speakerVoiceConfigs: [
-            { speaker: "المذيع", voiceConfig: { prebuiltVoiceConfig: { voiceName: hostVoice } } },
-            { speaker: "المحصل", voiceConfig: { prebuiltVoiceConfig: { voiceName: collectorVoice } } },
-          ],
-        },
-      },
+  const response = await fetch("https://ai.gateway.lovable.dev/v1/audio/speech", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${key}`,
+      "Content-Type": "application/json",
     },
-  } as any);
+    body: JSON.stringify({
+      model: "openai/gpt-4o-mini-tts",
+      input: params.text,
+      voice: mapVoice(params.voice),
+      instructions: getInstructions(params.role),
+      response_format: "pcm",
+    }),
+  });
 
-  const base64Audio =
-    (response as any).candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-  if (!base64Audio) throw new Error("لم يتمكن نظام Gemini من توليد الصوت.");
-  return Buffer.from(base64Audio, "base64");
+  if (!response.ok) {
+    const message = extractGatewayMessage(await response.text().catch(() => ""));
+    const error = new Error(message || "تعذر توليد الصوت من Lovable AI.") as Error & {
+      status?: number;
+    };
+    error.status = response.status;
+    throw error;
+  }
+
+  return Buffer.from(await response.arrayBuffer());
+}
+
+function parseFullScript(fullScript: string): DialogueTurn[] {
+  const normalized = fullScript
+    .replace(/المحصّل\s*:/g, "المحصل:")
+    .replace(/المُحصّل\s*:/g, "المحصل:");
+  const turns: DialogueTurn[] = [];
+  let current: DialogueTurn | null = null;
+
+  const pushCurrent = () => {
+    if (current?.text.trim()) turns.push({ ...current, text: current.text.trim() });
+  };
+
+  for (const rawLine of normalized.split("\n")) {
+    const line = rawLine.trim();
+    if (!line) continue;
+
+    const hostMatch = line.match(/^المذيع\s*:\s*(.*)$/);
+    const collectorMatch = line.match(/^المحصل\s*:\s*(.*)$/);
+
+    if (hostMatch || collectorMatch) {
+      pushCurrent();
+      current = {
+        role: hostMatch ? "host" : "collector",
+        text: (hostMatch?.[1] || collectorMatch?.[1] || "").trim(),
+      };
+      continue;
+    }
+
+    if (current) current.text = `${current.text}\n${line}`.trim();
+  }
+
+  pushCurrent();
+  return turns;
+}
+
+function splitLongText(text: string, maxLength = 1600) {
+  if (text.length <= maxLength) return [text];
+
+  const pieces = text
+    .split(/(?<=[.!؟?،…])\s+|\n+/u)
+    .map((piece) => piece.trim())
+    .filter(Boolean);
+  const chunks: string[] = [];
+  let current = "";
+
+  for (const piece of pieces.length ? pieces : [text]) {
+    if (piece.length > maxLength) {
+      if (current) chunks.push(current);
+      for (let i = 0; i < piece.length; i += maxLength) {
+        chunks.push(piece.slice(i, i + maxLength));
+      }
+      current = "";
+      continue;
+    }
+    if (`${current}\n${piece}`.trim().length > maxLength) {
+      if (current) chunks.push(current);
+      current = piece;
+    } else {
+      current = `${current}\n${piece}`.trim();
+    }
+  }
+
+  if (current) chunks.push(current);
+  return chunks;
+}
+
+function silence(seconds = 0.35, sampleRate = 24000) {
+  return Buffer.alloc(Math.round(sampleRate * seconds) * 2);
+}
+
+async function generateDialoguePcm(turns: DialogueTurn[], hostVoice: string, collectorVoice: string) {
+  const buffers: Buffer[] = [];
+
+  for (const turn of turns) {
+    const voice = turn.role === "host" ? hostVoice : collectorVoice;
+    for (const text of splitLongText(turn.text)) {
+      buffers.push(await synthesizeSpeechPcm({ text, voice, role: turn.role }));
+      buffers.push(silence());
+    }
+  }
+
+  return Buffer.concat(buffers);
 }
 
 export const Route = createFileRoute("/api/generate-dialogue")({
@@ -99,55 +259,29 @@ export const Route = createFileRoute("/api/generate-dialogue")({
             );
           }
 
-          const key = process.env.GEMINI_API_KEY;
-          if (!key) {
-            return Response.json(
-              { error: "مفتاح واجهة برمجة التطبيقات (GEMINI_API_KEY) مفقود." },
-              { status: 500 },
-            );
-          }
-          const client = new GoogleGenAI({ apiKey: key });
           const hv = hostVoice || "Charon";
           const cv = collectorVoice || "Fenrir";
 
           let combined: Buffer;
 
           if (fullScript) {
-            const normalized = String(fullScript)
-              .replace(/المحصّل:/g, "المحصل:")
-              .replace(/المحصّل :/g, "المحصل:");
-            const lines = normalized.split("\n");
-            const chunks: string[] = [];
-            let current: string[] = [];
-            let turnCount = 0;
-            const turnsPerChunk = 8;
-            for (const line of lines) {
-              const t = line.trim();
-              const isNew = t.startsWith("المذيع:") || t.startsWith("المحصل:");
-              if (isNew) {
-                if (turnCount >= turnsPerChunk) {
-                  chunks.push(current.join("\n"));
-                  current = [];
-                  turnCount = 0;
-                }
-                turnCount++;
-              }
-              current.push(line);
-            }
-            if (current.length) chunks.push(current.join("\n"));
-
-            const pcmBuffers: Buffer[] = [];
-            for (let i = 0; i < chunks.length; i += 2) {
-              const batch = chunks.slice(i, i + 2);
-              const results = await Promise.all(
-                batch.map((c) => generateChunk(client, c, hv, cv)),
+            const turns = parseFullScript(String(fullScript));
+            if (!turns.length) {
+              return Response.json(
+                { error: "يجب أن يحتوي النص الكامل على المتحدثين: المذيع والمحصل فقط." },
+                { status: 400 },
               );
-              pcmBuffers.push(...results);
             }
-            combined = Buffer.concat(pcmBuffers);
+            combined = await generateDialoguePcm(turns, hv, cv);
           } else {
-            const text = `المذيع: ${hostText}\nالمحصل: ${collectorText}`;
-            combined = await generateChunk(client, text, hv, cv);
+            combined = await generateDialoguePcm(
+              [
+                { role: "host", text: String(hostText) },
+                { role: "collector", text: String(collectorText) },
+              ],
+              hv,
+              cv,
+            );
           }
 
           const wav = encodeWav(combined);
@@ -161,9 +295,10 @@ export const Route = createFileRoute("/api/generate-dialogue")({
             msg.includes("429") ||
             msg.toLowerCase().includes("quota") ||
             msg.toLowerCase().includes("exhausted");
+          const status = typeof error?.status === "number" ? error.status : isQuota ? 429 : 500;
           return Response.json(
             { error: error?.message || "حدث خطأ أثناء توليد الحوار المشترك." },
-            { status: isQuota ? 429 : 500 },
+            { status },
           );
         }
       },

@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { GoogleGenAI } from "@google/genai";
 
 function encodeWav(pcm: Buffer, sampleRate = 24000): Buffer {
   const buffer = Buffer.alloc(44 + pcm.length);
@@ -20,6 +19,104 @@ function encodeWav(pcm: Buffer, sampleRate = 24000): Buffer {
   return buffer;
 }
 
+type OpenAiVoice =
+  | "alloy"
+  | "ash"
+  | "ballad"
+  | "coral"
+  | "echo"
+  | "fable"
+  | "nova"
+  | "onyx"
+  | "sage"
+  | "shimmer"
+  | "verse";
+
+const VOICE_MAP: Record<string, OpenAiVoice> = {
+  Charon: "onyx",
+  Fenrir: "ash",
+  Kore: "echo",
+  Zephyr: "alloy",
+  Orus: "onyx",
+  Enceladus: "fable",
+  Iapetus: "echo",
+  Umbriel: "sage",
+  Algieba: "verse",
+  Algenib: "onyx",
+  Rasalgethi: "ash",
+  Achernar: "alloy",
+  Alnilam: "echo",
+  Schedar: "sage",
+  Gacrux: "onyx",
+  Achird: "verse",
+  Zubenelgenubi: "alloy",
+  Sadachbia: "fable",
+  Sadaltager: "ash",
+  Puck: "nova",
+  Leda: "shimmer",
+  Aoede: "coral",
+  Callirrhoe: "sage",
+  Autonoe: "verse",
+  Despina: "shimmer",
+  Erinome: "coral",
+  Laomedeia: "nova",
+  Pulcherrima: "coral",
+  Vindemiatrix: "sage",
+  Sulafat: "shimmer",
+};
+
+function mapVoice(voice?: string): OpenAiVoice {
+  return (voice && VOICE_MAP[voice]) || "alloy";
+}
+
+function extractGatewayMessage(raw: string) {
+  try {
+    const parsed = JSON.parse(raw);
+    return parsed?.error?.message || parsed?.message || raw;
+  } catch {
+    return raw;
+  }
+}
+
+async function synthesizeSpeechPcm(params: {
+  text: string;
+  voice?: string;
+  instructions: string;
+}): Promise<Buffer> {
+  const key = process.env.LOVABLE_API_KEY;
+  if (!key) {
+    const error = new Error("مفتاح Lovable AI غير مهيأ في المشروع.") as Error & { status?: number };
+    error.status = 500;
+    throw error;
+  }
+
+  const response = await fetch("https://ai.gateway.lovable.dev/v1/audio/speech", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${key}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "openai/gpt-4o-mini-tts",
+      input: params.text,
+      voice: mapVoice(params.voice),
+      instructions: params.instructions,
+      response_format: "pcm",
+    }),
+  });
+
+  if (!response.ok) {
+    const message = extractGatewayMessage(await response.text().catch(() => ""));
+    const error = new Error(message || "تعذر توليد الصوت من Lovable AI.") as Error & {
+      status?: number;
+    };
+    error.status = response.status;
+    throw error;
+  }
+
+  return Buffer.from(await response.arrayBuffer());
+}
+
 export const Route = createFileRoute("/api/generate-tts")({
   server: {
     handlers: {
@@ -29,15 +126,6 @@ export const Route = createFileRoute("/api/generate-tts")({
           if (!text || !String(text).trim()) {
             return Response.json({ error: "الرجاء إدخال النص أولاً" }, { status: 400 });
           }
-          const key = process.env.GEMINI_API_KEY;
-          if (!key) {
-            return Response.json(
-              { error: "مفتاح واجهة برمجة التطبيقات (GEMINI_API_KEY) مفقود." },
-              { status: 500 },
-            );
-          }
-          const client = new GoogleGenAI({ apiKey: key });
-
           const roleLine =
             role === "host"
               ? "تحدث بنبرة مذيع بودكاست سعودي عفوي ومثقف، باللهجة السعودية العامية البسيطة المتداولة."
@@ -53,34 +141,21 @@ export const Route = createFileRoute("/api/generate-tts")({
 ${roleLine}
 انطق النص التالي مباشرة دون أي إضافات:`;
 
-          const response = await client.models.generateContent({
-            model: "gemini-2.5-flash-preview-tts",
-            contents: [{ parts: [{ text: `${promptPrefix}\n\n${text}` }] }],
-            config: {
-              responseModalities: ["AUDIO"],
-              speechConfig: {
-                voiceConfig: { prebuiltVoiceConfig: { voiceName: voice || "Kore" } },
-              },
-            },
-          } as any);
-
-          const base64Audio =
-            (response as any).candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-          if (!base64Audio) {
-            return Response.json(
-              { error: "لم يتمكن نظام Gemini من توليد الصوت. يرجى المحاولة مرة أخرى." },
-              { status: 500 },
-            );
-          }
-          const wav = encodeWav(Buffer.from(base64Audio, "base64"));
+          const pcm = await synthesizeSpeechPcm({
+            text: String(text),
+            voice,
+            instructions: promptPrefix,
+          });
+          const wav = encodeWav(pcm);
           return new Response(new Uint8Array(wav), {
             headers: { "Content-Type": "audio/wav" },
           });
         } catch (error: any) {
           console.error("generate-tts error:", error);
+          const status = typeof error?.status === "number" ? error.status : 500;
           return Response.json(
             { error: error?.message || "حدث خطأ أثناء توليد الصوت." },
-            { status: 500 },
+            { status },
           );
         }
       },
