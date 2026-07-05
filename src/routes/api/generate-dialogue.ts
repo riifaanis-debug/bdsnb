@@ -60,7 +60,7 @@ async function generateChunk(
 ${text}`;
 
   const response = await client.models.generateContent({
-    model: "gemini-3.1-flash-tts-preview",
+    model: "gemini-2.5-flash-preview-tts",
     contents: [{ parts: [{ text: prompt }] }],
     config: {
       responseModalities: ["AUDIO"],
